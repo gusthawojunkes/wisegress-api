@@ -9,3 +9,5 @@ quarkus:
     password: 123
   http:
     port: 8080
+  swagger-ui:
+    path: /swagger
