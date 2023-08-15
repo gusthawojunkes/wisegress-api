@@ -1,0 +1,11 @@
+greeting:
+  message: "hello"
+quarkus:
+  datasource:
+    db-kind: postgresql
+    jdbc:
+      url: jdbc:postgresql://localhost:5432/some-database
+    username: abc
+    password: 123
+  http:
+    port: 8080
