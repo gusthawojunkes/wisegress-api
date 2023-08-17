@@ -1,13 +1,16 @@
-greeting:
-  message: "hello"
 quarkus:
   datasource:
     db-kind: postgresql
     jdbc:
-      url: jdbc:postgresql://localhost:5432/some-database
-    username: abc
-    password: 123
+      url: jdbc:postgresql://localhost:5432/<database>
+    username: <username>
+    password: <password>
+
   http:
     port: 8080
+
   swagger-ui:
     path: /swagger
+
+wisegress:
+  message: "Hello from Wisegress!"
