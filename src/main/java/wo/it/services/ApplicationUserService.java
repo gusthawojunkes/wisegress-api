@@ -39,10 +39,9 @@ public class ApplicationUserService implements CRUDService<ApplicationUser> {
 
     private static void checkIfTheFormularyHasCritics(Formulary formulary) throws InvalidFormularyException {
         formulary.validate();
-        if (!formulary.valid()) {
+        if (formulary.hasCritics()) {
             throw new InvalidFormularyException("Não foi possível realizar o cadastro, revise os dados!", formulary.getCritics());
         }
-
     }
 
     private void checkIfUserAlreadyExists(String email) throws EmptyParameterException, UserAlreadyFoundException {

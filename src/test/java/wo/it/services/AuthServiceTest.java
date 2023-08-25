@@ -17,6 +17,10 @@ import wo.it.exceptions.UserAlreadyFoundException;
 import wo.it.models.Status;
 import wo.it.models.authentication.Credential;
 import wo.it.models.authentication.Formulary;
+import wo.it.models.authentication.RegistrationCritic;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -35,29 +39,25 @@ class AuthServiceTest {
     void tearDown() {
     }
 
-    @DisplayName("`AuthService.authenticate()` must throw an exeception if the `credential.email` parameter is blank")
+    @DisplayName("`AuthService.authenticate()` must fill the response with an error if the `credential.email` parameter is blank")
     @ParameterizedTest(name = "When `credential.email` is \"{0}\" then the exception must be thrown")
     @NullSource
     @ValueSource(strings = {"", " "})
-    void authenticateMethodMustThrowAnErrorIfTheEmailParameterIsNull(String email) throws EmptyParameterException {
+    void authenticateMethodMustFillTheResponseWithAnErrorIfTheEmailParameterIsNull(String email) throws EmptyParameterException {
         Credential credential = new Credential(email, "1234");
 
         when(applicationUserService.findByEmail(credential.email())).thenThrow(new EmptyParameterException("Por favor, informe em email para consultar um usuário"));
         var response = service.authenticate(credential);
 
-        var exception = assertThrows(EmptyParameterException.class, () -> {
-            applicationUserService.findByEmail(credential.email());
-        });
         assertTrue(response.hasErrors());
         assertTrue(response.hasCritics());
         assertFalse(response.isSuccess());
         assertEquals("Por favor, informe em email para consultar um usuário", response.getMessage());
-        assertEquals("Por favor, informe em email para consultar um usuário", exception.getMessage());
     }
 
     @DisplayName("`AuthService.authenticate()` must return an invalid response if the user is not found")
     @Test
-    void authenticateMethodMustReturnAnErrorIfTheUserIsNotFound() throws EmptyParameterException {
+    void authenticateMethodMustFillTheResponseWithAnErrorIfTheUserIsNotFound() throws EmptyParameterException {
         Credential credential = new Credential("test@test.com", "1234");
 
         when(applicationUserService.findByEmail("test@test.com")).thenReturn(null);
@@ -71,7 +71,7 @@ class AuthServiceTest {
 
     @DisplayName("`AuthService.authenticate()` must return an invalid response if the user is blocked")
     @Test
-    void authenticateMethodMustReturnAnErrorIfTheUserIsBlocked() throws EmptyParameterException {
+    void authenticateMethodMustFillTheResponseWithAnErrorIfTheUserIsBlocked() throws EmptyParameterException {
         Credential credential = new Credential("test@test.com", "1234");
 
         var blockedUser = new ApplicationUser();
@@ -88,7 +88,7 @@ class AuthServiceTest {
 
     @DisplayName("`AuthService.authenticate()` must return a valid response")
     @Test
-    void authenticateMethodMustReturnAValidResponse() throws EmptyParameterException {
+    void authenticateMethodMustFillTheResponseWithAValidResponse() throws EmptyParameterException {
         Credential credential = new Credential("test@test.com", "1234");
 
         var user = new ApplicationUser();
@@ -108,34 +108,25 @@ class AuthServiceTest {
     @ParameterizedTest(name = "When `formulary.email` is \"{0}\" then the exception must be thrown")
     @NullSource
     @ValueSource(strings = {"", " "})
-    void registerMethodMustThrowAnExceptionIfTheEmailParameterIsNull(String email) throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
+    void registerMethodMustFillTheResponseWithAnExceptionIfTheEmailParameterIsNull(String email) throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
         Formulary formulary = new Formulary(email, "1234");
 
         when(applicationUserService.register(formulary)).thenThrow(new EmptyParameterException("Por favor, informe um email para cadastrar o usuário!"));
 
         var response = service.register(formulary);
-        var exception = assertThrows(EmptyParameterException.class, () -> {
-            applicationUserService.register(formulary);
-        });
 
         assertTrue(response.isError());
         assertTrue(response.hasCritics());
         assertFalse(response.isSuccess());
         assertEquals("Por favor, informe um email para cadastrar o usuário!", response.getMessage());
-        assertEquals("Por favor, informe um email para cadastrar o usuário!", exception.getMessage());
     }
 
     @DisplayName("`AuthService.register()` must throw an exception if the user already exists")
     @Test
-    void registerMethodMustThrowAnExceptionIfTheUserAlreadyExists() throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
+    void registerMethodMustFillTheResponseWithAnExceptionIfTheUserAlreadyExists() throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
         Formulary formulary = new Formulary("already@exists.com", "1234");
 
         var message = String.format("Já existe um usuário cadastrado com o email \"%s\"", formulary.getEmail());
-
-        var user = new ApplicationUser();
-        user.setEmail(formulary.getEmail());
-        user.setPassword(formulary.getPassword());
-        user.setStatus(Status.ACTIVE);
 
         when(applicationUserService.register(formulary)).thenThrow(new UserAlreadyFoundException(message));
 
@@ -144,6 +135,26 @@ class AuthServiceTest {
         assertTrue(response.hasCritics());
         assertFalse(response.isSuccess());
         assertEquals(message, response.getMessage());
+    }
+
+    @DisplayName("`AuthService.register()` must throw an exception if the formulary has any critic")
+    @Test
+    void registerMethodMustFillTheResponseWithAnExceptionIfTheTheFormularyHasAnyCritic() throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
+        Formulary formulary = new Formulary("testmail", "1234");
+
+        List<RegistrationCritic> critics = new ArrayList<>();
+        critics.add(new RegistrationCritic("email", "O email deve ser válido", formulary.getEmail()));
+        critics.add(new RegistrationCritic("birthday", "A data de nascimento deve ser válida", formulary.getBirthday()));
+
+        when(applicationUserService.register(formulary))
+        .thenThrow(new InvalidFormularyException("O formulário apresenta criticas de validação, por favor revise os dados!", critics));
+
+        var response = service.register(formulary);
+        assertTrue(response.isError());
+        assertTrue(response.hasCritics());
+        assertFalse(response.isSuccess());
+        assertNotNull(response.getCritics());
+        assertEquals("O formulário apresenta criticas de validação, por favor revise os dados!", response.getMessage());
     }
 
 }

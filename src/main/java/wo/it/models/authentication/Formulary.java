@@ -32,8 +32,8 @@ public class Formulary {
         throw new NotImplementedException();
     }
 
-    public boolean valid() {
-        return CollectionUtils.isEmpty(this.critics);
+    public boolean hasCritics() {
+        return CollectionUtils.isNotEmpty(this.critics);
 
     }
 
