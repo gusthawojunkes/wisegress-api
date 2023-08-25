@@ -1,6 +1,6 @@
 package wo.it.database.models;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,14 +11,18 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-public class User extends PanacheEntity {
+public class ApplicationUser extends AbstractEntity {
 
-    public String name;
-    public String email;
-    public String password;
-    public String uuid;
-    public LocalDate birthday;
-    public Status status;
+    private String name;
+
+    @Column(unique = true)
+    private String email;
+
+    private String password;
+
+    private LocalDate birthday;
+
+    private Status status;
 
     public boolean isBlocked() {
         return this.status == Status.BLOCKED;

@@ -1,4 +1,4 @@
-package wo.it.models.authentication;
+package wo.it.models;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,12 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
-public class AuthenticationResponse {
+public class CommonValidationResponse {
 
-    public AuthenticationResponse() {
+    public CommonValidationResponse() {
         this.error = false;
         this.success = false;
-        this.message = "";
+        this.message = StringUtils.EMPTY;
     }
 
     private boolean success;
@@ -30,6 +30,17 @@ public class AuthenticationResponse {
 
     public boolean hasCritics() {
         return StringUtils.isNotBlank(message) && (hasErrors() || !valid());
+    }
+
+    public static CommonValidationResponse initWithSuccess() {
+        var response = new CommonValidationResponse();
+        response.setSuccess(true);
+        return response;
+    }
+
+    public void makeInvalid() {
+        this.error = true;
+        this.success = false;
     }
 
 }

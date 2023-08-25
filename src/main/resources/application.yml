@@ -8,9 +8,14 @@ quarkus:
 
   http:
     port: 8080
+    test-port: 8180
 
   swagger-ui:
     path: /swagger
+
+  hibernate-orm:
+    database:
+      generation: update
 
 wisegress:
   message: "Hello from Wisegress!"

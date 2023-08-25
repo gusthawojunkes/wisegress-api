@@ -2,23 +2,61 @@ package wo.it.services;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import wo.it.database.models.User;
-import wo.it.models.authentication.AuthenticationResponse;
+import wo.it.database.models.ApplicationUser;
+import wo.it.exceptions.EmptyParameterException;
+import wo.it.exceptions.InvalidFormularyException;
+import wo.it.exceptions.UserAlreadyFoundException;
+import wo.it.models.ApplicationUserModel;
+import wo.it.models.CommonValidationResponse;
 import wo.it.models.authentication.Credential;
-import wo.it.repositories.UserRepository;
+import wo.it.models.authentication.Formulary;
+import wo.it.models.authentication.RegistrationResponse;
 
 @ApplicationScoped
 public class AuthService {
 
-    @Inject UserRepository userRepository;
+    @Inject ApplicationUserService applicationUserService;
 
-    public AuthenticationResponse authenticate(Credential credentials) {
-        var response = new AuthenticationResponse();
+    public CommonValidationResponse authenticate(Credential credentials) {
+        var response = CommonValidationResponse.initWithSuccess();
 
-        User user = userRepository.findByEmail(credentials.getSanitizedEmail());
+        ApplicationUser user;
+        try {
+            user = applicationUserService.findByEmail(credentials.email());
+        } catch (EmptyParameterException exception) {
+            response.makeInvalid();
+            response.setMessage(exception.getMessage());
+            return response;
+        }
+
+        if (user == null) {
+            response.makeInvalid();
+            response.setMessage("Usuário não encontrado no sistema!");
+            return response;
+        }
 
         if (user.isBlocked()) {
+            response.makeInvalid();
             response.setMessage("Usuário bloqueado pelo sistema, entre em contato com o suporte!");
+        }
+
+        return response;
+    }
+
+    public RegistrationResponse register(Formulary formulary) {
+        var response = new RegistrationResponse();
+
+        try {
+            var user = applicationUserService.register(formulary);
+            var model = ApplicationUserModel.loadFrom(user);
+            response.setUser(model);
+        } catch (EmptyParameterException | UserAlreadyFoundException exception) {
+            response.makeInvalid();
+            response.setMessage(exception.getMessage());
+        } catch (InvalidFormularyException invalidFormularyException) {
+            response.makeInvalid();
+            response.setMessage(invalidFormularyException.getMessage());
+            response.setCritics(invalidFormularyException.getCritics());
         }
 
         return response;
