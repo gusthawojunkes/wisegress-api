@@ -3,16 +3,21 @@ package wo.it.controllers;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import wo.it.models.CommonValidationResponse;
 import wo.it.models.authentication.Credential;
+import wo.it.models.authentication.Formulary;
+import wo.it.models.authentication.RegistrationResponse;
 import wo.it.services.AuthService;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @QuarkusTest
 @TestHTTPEndpoint(AuthController.class)
@@ -28,21 +33,35 @@ class AuthControllerTest {
     void tearDown() {
     }
 
-//    @DisplayName("When `CommonValidationResponse.class` has critics the endpoint must return unauthorized status code (401)")
+    @DisplayName("When `AuthService.login()` has critics the endpoint must return unauthorized status code (401)")
+    @Test
+    void whenLoginEndpointHasCriticsThenMustReturnUnauthorizedStatus() {
+        var unauthorizedResponse = new CommonValidationResponse();
+        unauthorizedResponse.setSuccess(false);
+        unauthorizedResponse.setError(true);
+        unauthorizedResponse.setMessage("Unauthorized!");
+
+        Credential credential = new Credential("", "");
+
+        when(service.authenticate(credential)).thenReturn(unauthorizedResponse);
+
+        given().contentType(ContentType.JSON).body(credential).when().post("/login")
+        .then().statusCode(401);
+    }
+
+//    @DisplayName("When `AuthService.register()` has critics the endpoint must return bad request status code (400)")
 //    @Test
-//    @Disabled
-//    void whenResponseHasCriticsThenMustReturnUnauthorizedStatus() {
-//        var unauthorizedResponse = new CommonValidationResponse();
-//        unauthorizedResponse.setSuccess(false);
-//        unauthorizedResponse.setError(true);
-//        unauthorizedResponse.setMessage("Unauthorized!");
+//    void whenRegisterEndpointHasCriticsThenMustReturnBadRequestStatus() {
+//        var response = new RegistrationResponse();
+//        response.setSuccess(false);
+//        response.setError(true);
 //
-//        Credential credential = new Credential("", "");
+//        Formulary formulary = new Formulary();
 //
-//        Mockito.when(service.authenticate(credential)).thenReturn(unauthorizedResponse);
+//        when(service.register(formulary)).thenReturn(response);
 //
-//        given().contentType("application/json").body(credential).when().post("/login")
-//        .then().statusCode(401)
-//        .body(is(unauthorizedResponse));
+//        given().contentType(ContentType.JSON).body(formulary).when().post("/register")
+//        .then().statusCode(400);
+//
 //    }
 }
