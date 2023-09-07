@@ -16,18 +16,21 @@ public abstract class AbstractEntity extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.UUID)
     protected String uuid;
 
-    protected LocalDateTime insertDate;
-    protected LocalDateTime updateDate;
+    @Column(name = "inserted_at")
+    protected LocalDateTime insertedAt;
+    @Column(name = "updated_at")
+    protected LocalDateTime updatedAt;
+
 
     @PrePersist
     protected void onCreate() {
-        insertDate = LocalDateTime.now();
-        updateDate = LocalDateTime.now();
+        insertedAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updateDate = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
 }

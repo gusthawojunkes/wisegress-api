@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import wo.it.database.models.ApplicationUser;
+import wo.it.database.entities.ApplicationUser;
 import wo.it.exceptions.EmptyParameterException;
 import wo.it.exceptions.InvalidFormularyException;
 import wo.it.exceptions.UserAlreadyFoundException;

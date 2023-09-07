@@ -2,7 +2,7 @@ package wo.it.services;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import wo.it.database.models.ApplicationUser;
+import wo.it.database.entities.ApplicationUser;
 import wo.it.exceptions.EmptyParameterException;
 import wo.it.exceptions.InvalidFormularyException;
 import wo.it.exceptions.UserAlreadyFoundException;

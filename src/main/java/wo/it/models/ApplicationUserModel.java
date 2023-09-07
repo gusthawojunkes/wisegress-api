@@ -2,7 +2,7 @@ package wo.it.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import wo.it.database.models.ApplicationUser;
+import wo.it.database.entities.ApplicationUser;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,8 +16,8 @@ public class ApplicationUserModel {
     private String uuid;
     private LocalDate birthday;
     private Status status;
-    private LocalDateTime insertDate;
-    private LocalDateTime updateDate;
+    private LocalDateTime insertedAt;
+    private LocalDateTime updatedAt;
 
     public static ApplicationUserModel loadFrom(ApplicationUser user) {
         var model = new ApplicationUserModel();
@@ -27,8 +27,8 @@ public class ApplicationUserModel {
         model.setUuid(user.getUuid());
         model.setStatus(user.getStatus());
         model.setBirthday(user.getBirthday());
-        model.setInsertDate(user.getInsertDate());
-        model.setUpdateDate(user.getUpdateDate());
+        model.setInsertedAt(user.getInsertedAt());
+        model.setUpdatedAt(user.getUpdatedAt());
 
         return model;
     }

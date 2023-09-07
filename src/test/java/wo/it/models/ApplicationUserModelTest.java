@@ -2,7 +2,7 @@ package wo.it.models;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
-import wo.it.database.models.ApplicationUser;
+import wo.it.database.entities.ApplicationUser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
