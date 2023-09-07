@@ -4,7 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import wo.it.database.models.ApplicationUser;
+import wo.it.database.entities.ApplicationUser;
 import wo.it.exceptions.EmptyParameterException;
 import wo.it.exceptions.InvalidFormularyException;
 import wo.it.exceptions.UserAlreadyFoundException;
@@ -31,7 +31,7 @@ public class ApplicationUserService implements CRUDService<ApplicationUser> {
         checkIfUserAlreadyExists(formulary.getEmail());
         checkIfTheFormularyHasCritics(formulary);
 
-        ApplicationUser user = formulary.toNewUser();
+        var user = formulary.toNewUser();
         this.create(user);
 
         return user;

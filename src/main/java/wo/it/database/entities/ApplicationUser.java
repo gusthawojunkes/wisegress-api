@@ -1,4 +1,4 @@
-package wo.it.database.models;
+package wo.it.database.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,11 +13,13 @@ import java.time.LocalDate;
 @Entity
 public class ApplicationUser extends AbstractEntity {
 
+    @Column(length = 60, nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     private LocalDate birthday;

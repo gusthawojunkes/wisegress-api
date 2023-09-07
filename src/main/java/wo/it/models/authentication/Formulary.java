@@ -1,11 +1,14 @@
 package wo.it.models.authentication;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import wo.it.database.models.ApplicationUser;
+import wo.it.database.entities.ApplicationUser;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,9 +19,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Formulary {
 
+    @Email
+    @NotBlank
     private String email;
+    @NotBlank
     private String password;
 
+    @NotNull
     private LocalDate birthday;
     private List<RegistrationCritic> critics;
 

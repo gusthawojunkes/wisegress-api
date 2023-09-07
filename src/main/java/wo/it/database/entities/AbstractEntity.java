@@ -1,4 +1,4 @@
-package wo.it.database.models;
+package wo.it.database.entities;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;

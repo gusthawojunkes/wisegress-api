@@ -2,7 +2,7 @@ package wo.it.repositories;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import wo.it.database.models.ApplicationUser;
+import wo.it.database.entities.ApplicationUser;
 
 @ApplicationScoped
 public class ApplicationUserRepository implements PanacheRepository<ApplicationUser> {
@@ -11,4 +11,6 @@ public class ApplicationUserRepository implements PanacheRepository<ApplicationU
         return find("email", email).firstResult();
     }
 
+    public void persist(ApplicationUser entity) {
+    }
 }
