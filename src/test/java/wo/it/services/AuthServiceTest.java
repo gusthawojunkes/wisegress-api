@@ -37,7 +37,7 @@ class AuthServiceTest {
     void authenticateMethodMustFillTheResponseWithAnErrorIfTheEmailParameterIsNull(String email) throws EmptyParameterException {
         Credential credential = new Credential(email, "1234");
 
-        when(applicationUserService.findByEmail(credential.getEmail())).thenThrow(new EmptyParameterException("Por favor, informe em email para consultar um usuário"));
+        when(applicationUserService.findByEmail(credential.email())).thenThrow(new EmptyParameterException("Por favor, informe em email para consultar um usuário"));
         var response = service.authenticate(credential);
 
         assertTrue(response.hasErrors());
@@ -83,7 +83,7 @@ class AuthServiceTest {
         Credential credential = new Credential("test@test.com", "1234");
 
         var user = new ApplicationUser();
-        user.setEmail(credential.getEmail());
+        user.setEmail(credential.email());
         user.setPassword(credential.getEncryptedPassword());
         user.setStatus(Status.ACTIVE);
 

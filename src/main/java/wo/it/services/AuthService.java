@@ -24,7 +24,7 @@ public class AuthService {
 
         ApplicationUser user;
         try {
-            user = applicationUserService.findByEmail(credentials.getEmail());
+            user = applicationUserService.findByEmail(credentials.email());
         } catch (EmptyParameterException exception) {
             response.makeInvalid();
             response.setMessage(exception.getMessage());

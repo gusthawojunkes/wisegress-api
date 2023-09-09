@@ -4,7 +4,6 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wo.it.models.CommonValidationResponse;
@@ -31,7 +30,7 @@ class AuthControllerTest {
         unauthorizedResponse.setError(true);
         unauthorizedResponse.setMessage("Unauthorized!");
 
-        Credential credential = new Credential("teste@gmail.com", "123456");
+        Credential credential = new Credential("test@test.com", "123456");
 
         when(service.authenticate(credential)).thenReturn(unauthorizedResponse);
 
