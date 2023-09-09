@@ -29,7 +29,7 @@ public class AuthController {
         CommonValidationResponse response = service.authenticate(credential);
 
         if (response.hasCritics()) {
-            return Response.status(UNAUTHORIZED).entity(response).build();
+            return Response.status(UNAUTHORIZED.getStatusCode()).entity(response).build();
         }
 
         return Response.ok(credential).build();
@@ -42,7 +42,7 @@ public class AuthController {
         RegistrationResponse response = service.register(formulary);
 
         if (response.hasCritics()) {
-            return Response.status(BAD_REQUEST).build();
+            return Response.status(BAD_REQUEST.getStatusCode()).entity(response).build();
         }
 
         return Response.ok(response).build();

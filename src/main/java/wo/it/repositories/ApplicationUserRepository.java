@@ -10,7 +10,4 @@ public class ApplicationUserRepository implements PanacheRepository<ApplicationU
     public ApplicationUser findByEmail(String email) {
         return find("email", email).firstResult();
     }
-
-    public void persist(ApplicationUser entity) {
-    }
 }

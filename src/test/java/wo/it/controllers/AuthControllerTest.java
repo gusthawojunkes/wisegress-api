@@ -15,8 +15,7 @@ import wo.it.models.authentication.RegistrationResponse;
 import wo.it.services.AuthService;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
@@ -41,27 +40,31 @@ class AuthControllerTest {
         unauthorizedResponse.setError(true);
         unauthorizedResponse.setMessage("Unauthorized!");
 
-        Credential credential = new Credential("", "");
+        Credential credential = new Credential("teste@gmail.com", "123456");
 
         when(service.authenticate(credential)).thenReturn(unauthorizedResponse);
 
         given().contentType(ContentType.JSON).body(credential).when().post("/login")
-        .then().statusCode(401);
+        .then()
+        .body("success", is(false))
+        .body("error", is(true))
+        .statusCode(401);
     }
 
-//    @DisplayName("When `AuthService.register()` has critics the endpoint must return bad request status code (400)")
-//    @Test
-//    void whenRegisterEndpointHasCriticsThenMustReturnBadRequestStatus() {
-//        var response = new RegistrationResponse();
-//        response.setSuccess(false);
-//        response.setError(true);
-//
-//        Formulary formulary = new Formulary();
-//
-//        when(service.register(formulary)).thenReturn(response);
-//
-//        given().contentType(ContentType.JSON).body(formulary).when().post("/register")
-//        .then().statusCode(400);
-//
-//    }
+    @DisplayName("When `AuthService.register()` has critics the endpoint must return bad request status code (400)")
+    @Test
+    void whenRegisterEndpointHasCriticsThenMustReturnBadRequestStatus() {
+        var response = new RegistrationResponse();
+        response.setSuccess(false);
+        response.setError(true);
+
+        Formulary formulary = new Formulary();
+
+        when(service.register(formulary)).thenReturn(response);
+
+        given().contentType(ContentType.JSON).body(formulary).when().post("/register")
+        .then()
+        .statusCode(400);
+
+    }
 }

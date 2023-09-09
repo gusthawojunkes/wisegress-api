@@ -3,17 +3,19 @@ package wo.it.services;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
+import wo.it.database.entities.ApplicationUser;
 import wo.it.exceptions.EmptyParameterException;
+import wo.it.exceptions.PersistException;
 import wo.it.repositories.ApplicationUserRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @QuarkusTest
 class ApplicationUserServiceTest {
@@ -33,6 +35,23 @@ class ApplicationUserServiceTest {
 
         assertEquals("Por favor, informe em email para consultar um usuário", exception.getMessage());
 
+    }
+
+    @DisplayName("`ApplicationUserService.create()` must throw an exception when password is blank")
+    @Test
+    void createMethodMustThrowAnPersistExceptionWhenPasswordIsBlank() {
+        var user = new ApplicationUser();
+        user.setName("Gusthawo");
+        user.setPassword(null);
+
+        PersistException exception = assertThrows(PersistException.class, () -> {
+            service.create(user);
+        });
+
+        assertEquals("A senha recebia para encriptação não pode ser vazia!", exception.getMessage());
+
+        doNothing().when(applicationUserRepository).persist(user);
+        verify(applicationUserRepository, times(0)).persist(user);
     }
 
 }

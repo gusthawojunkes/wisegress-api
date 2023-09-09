@@ -5,10 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import wo.it.database.entities.ApplicationUser;
+import wo.it.exceptions.PersistException;
+import wo.it.models.Status;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import java.util.List;
 
 @ToString
 @Getter
+@Setter
 @NoArgsConstructor
 public class Formulary {
 
@@ -24,6 +28,9 @@ public class Formulary {
     private String email;
     @NotBlank
     private String password;
+
+    @NotBlank
+    private String name;
 
     @NotNull
     private LocalDate birthday;
@@ -36,12 +43,20 @@ public class Formulary {
     }
 
     public void validate() {
-        throw new NotImplementedException();
+        List<RegistrationCritic> critics = new ArrayList<>();
+        if (StringUtils.isBlank(this.email)) {
+            critics.add(new RegistrationCritic("email","O e-mail não pode ser vazio", this.email));
+        }
+
+        if (this.birthday.isAfter(LocalDate.now())) {
+            critics.add(new RegistrationCritic("birthday","A data de aniversário não pode ser maior que a data de hoje!", this.email));
+        }
+
+        this.setCritics(critics);
     }
 
     public boolean hasCritics() {
         return CollectionUtils.isNotEmpty(this.critics);
-
     }
 
     public ApplicationUser toNewUser() {
@@ -49,7 +64,13 @@ public class Formulary {
         user.setEmail(this.getEmail());
         user.setPassword(this.getPassword());
         user.setBirthday(this.getBirthday());
+        user.setName(this.getName());
+        user.setStatus(Status.ACTIVE);
         return user;
+    }
+
+    public List<RegistrationCritic> getCritics() {
+        return this.critics == null ? new ArrayList<>() : this.critics;
     }
 }
 

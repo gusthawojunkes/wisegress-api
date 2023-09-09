@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.exceptions.EmptyParameterException;
 import wo.it.exceptions.InvalidFormularyException;
+import wo.it.exceptions.PersistException;
 import wo.it.exceptions.UserAlreadyFoundException;
 import wo.it.models.ApplicationUserModel;
 import wo.it.models.CommonValidationResponse;
@@ -50,7 +51,7 @@ public class AuthService {
             var user = applicationUserService.register(formulary);
             var model = ApplicationUserModel.loadFrom(user);
             response.setUser(model);
-        } catch (EmptyParameterException | UserAlreadyFoundException exception) {
+        } catch (EmptyParameterException | UserAlreadyFoundException | PersistException exception) {
             response.makeInvalid();
             response.setMessage(exception.getMessage());
         } catch (InvalidFormularyException invalidFormularyException) {

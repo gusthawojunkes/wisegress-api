@@ -3,6 +3,7 @@ package wo.it.exceptions;
 import lombok.Getter;
 import wo.it.models.authentication.RegistrationCritic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,6 +14,15 @@ public class InvalidFormularyException extends Exception {
     public InvalidFormularyException (String message, List<RegistrationCritic> critics) {
         super(message);
         this.critics = critics;
+    }
+
+    public InvalidFormularyException (String message, RegistrationCritic critic) {
+        super(message);
+        this.getCritics().add(critic);
+    }
+
+    public List<RegistrationCritic> getCritics() {
+        return this.critics != null ? this.critics : new ArrayList<>();
     }
 
 }

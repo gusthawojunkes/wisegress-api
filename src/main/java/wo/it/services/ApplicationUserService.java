@@ -2,13 +2,13 @@ package wo.it.services;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import wo.it.database.entities.ApplicationUser;
-import wo.it.exceptions.EmptyParameterException;
-import wo.it.exceptions.InvalidFormularyException;
-import wo.it.exceptions.UserAlreadyFoundException;
+import wo.it.exceptions.*;
 import wo.it.models.authentication.Formulary;
+import wo.it.models.authentication.Password;
 import wo.it.repositories.ApplicationUserRepository;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class ApplicationUserService implements CRUDService<ApplicationUser> {
         return applicationUserRepository.findByEmail(email);
     }
 
-    public ApplicationUser register(Formulary formulary) throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
+    public ApplicationUser register(Formulary formulary) throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException, PersistException {
         if (formulary == null || StringUtils.isBlank(formulary.getEmail())) {
             throw new EmptyParameterException("Por favor, informe um email para cadastrar o usuário!");
         }
@@ -52,7 +52,14 @@ public class ApplicationUserService implements CRUDService<ApplicationUser> {
     }
 
     @Override
-    public void create(ApplicationUser entity) {
+    @Transactional
+    public void create(ApplicationUser entity) throws PersistException {
+        try {
+            String encryptedPassword = Password.encrypt(entity.getPassword());
+            entity.setPassword(encryptedPassword);
+        } catch (EncryptException e) {
+            throw new PersistException(e.getMessage());
+        }
         applicationUserRepository.persist(entity);
     }
 

@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.exceptions.EmptyParameterException;
 import wo.it.exceptions.InvalidFormularyException;
+import wo.it.exceptions.PersistException;
 import wo.it.exceptions.UserAlreadyFoundException;
 import wo.it.models.Status;
 import wo.it.models.authentication.Credential;
@@ -108,7 +109,7 @@ class AuthServiceTest {
     @ParameterizedTest(name = "When `formulary.email` is \"{0}\" then the exception must be thrown")
     @NullSource
     @ValueSource(strings = {"", " "})
-    void registerMethodMustFillTheResponseWithAnExceptionIfTheEmailParameterIsNull(String email) throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
+    void registerMethodMustFillTheResponseWithAnExceptionIfTheEmailParameterIsNull(String email) throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException, PersistException {
         Formulary formulary = new Formulary(email, "1234");
 
         when(applicationUserService.register(formulary)).thenThrow(new EmptyParameterException("Por favor, informe um email para cadastrar o usuário!"));
@@ -123,7 +124,7 @@ class AuthServiceTest {
 
     @DisplayName("`AuthService.register()` must throw an exception if the user already exists")
     @Test
-    void registerMethodMustFillTheResponseWithAnExceptionIfTheUserAlreadyExists() throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
+    void registerMethodMustFillTheResponseWithAnExceptionIfTheUserAlreadyExists() throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException, PersistException {
         Formulary formulary = new Formulary("already@exists.com", "1234");
 
         var message = String.format("Já existe um usuário cadastrado com o email \"%s\"", formulary.getEmail());
@@ -139,7 +140,7 @@ class AuthServiceTest {
 
     @DisplayName("`AuthService.register()` must throw an exception if the formulary has any critic")
     @Test
-    void registerMethodMustFillTheResponseWithAnExceptionIfTheTheFormularyHasAnyCritic() throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException {
+    void registerMethodMustFillTheResponseWithAnExceptionIfTheTheFormularyHasAnyCritic() throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException, PersistException {
         Formulary formulary = new Formulary("testmail", "1234");
 
         List<RegistrationCritic> critics = new ArrayList<>();
