@@ -2,8 +2,17 @@ package wo.it.models;
 
 public enum Status {
 
-    ACTIVE,
-    INACTIVE,
-    BLOCKED
+    ACTIVE ("Ativo"),
+    INACTIVE("Inativo"),
+    BLOCKED("Bloqueado");
 
+    private final String description;
+
+    Status(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

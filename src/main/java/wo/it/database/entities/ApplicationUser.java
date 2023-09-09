@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
+import wo.it.models.ApplicationUserModel;
 import wo.it.models.Status;
 
 import java.time.LocalDate;
@@ -30,4 +31,23 @@ public class ApplicationUser extends AbstractEntity {
         return this.status == Status.BLOCKED;
     }
 
+    public ApplicationUserModel toModel() {
+        var model = new ApplicationUserModel();
+
+        model.setName(this.getName());
+        model.setEmail(this.getEmail());
+        model.setPassword(this.getPassword());
+        model.setBirthday(this.getBirthday());
+        model.setUuid(this.getUuid());
+        model.setStatus(this.getStatus());
+        model.setInsertedAt(this.getInsertedAt());
+        model.setUpdatedAt(this.getUpdatedAt());
+
+        return model;
+    }
+
+    @Override
+    public String toString() {
+        return  String.format("[%s] %s (%s)", this.getStatus().getDescription(), this.getName(), this.getEmail());
+    }
 }

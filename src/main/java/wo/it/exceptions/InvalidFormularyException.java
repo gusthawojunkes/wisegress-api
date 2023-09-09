@@ -16,11 +16,6 @@ public class InvalidFormularyException extends Exception {
         this.critics = critics;
     }
 
-    public InvalidFormularyException (String message, RegistrationCritic critic) {
-        super(message);
-        this.getCritics().add(critic);
-    }
-
     public List<RegistrationCritic> getCritics() {
         return this.critics != null ? this.critics : new ArrayList<>();
     }

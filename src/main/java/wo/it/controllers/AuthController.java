@@ -32,7 +32,7 @@ public class AuthController {
             return Response.status(UNAUTHORIZED.getStatusCode()).entity(response).build();
         }
 
-        return Response.ok(credential).build();
+        return Response.ok(response).build();
     }
 
     @POST

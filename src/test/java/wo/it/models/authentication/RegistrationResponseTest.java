@@ -38,6 +38,7 @@ class RegistrationResponseTest {
         var response = new RegistrationResponse();
         response.makeInvalid();
 
+        assertNull(response.getUser());
         assertTrue(response.isError());
         assertFalse(response.isSuccess());
     }

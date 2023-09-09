@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 public class CommonValidationResponse {
 
-    public CommonValidationResponse() {
+    private CommonValidationResponse() {
         this.error = false;
         this.success = false;
         this.message = StringUtils.EMPTY;
@@ -19,6 +19,8 @@ public class CommonValidationResponse {
     private boolean error;
 
     private String message;
+
+    private ApplicationUserModel user;
 
     public boolean hasErrors() {
         return error;
@@ -38,9 +40,20 @@ public class CommonValidationResponse {
         return response;
     }
 
+    public static CommonValidationResponse init() {
+        return new CommonValidationResponse();
+    }
+
     public void makeInvalid() {
         this.error = true;
         this.success = false;
+        this.setUser(null);
+    }
+
+    public void makeValid() {
+        this.error = false;
+        this.success = true;
+        this.message = StringUtils.EMPTY;
     }
 
 }

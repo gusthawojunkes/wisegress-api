@@ -4,8 +4,7 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wo.it.models.CommonValidationResponse;
@@ -24,18 +23,10 @@ class AuthControllerTest {
 
     @InjectMock AuthService service;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
     @DisplayName("When `AuthService.login()` has critics the endpoint must return unauthorized status code (401)")
     @Test
     void whenLoginEndpointHasCriticsThenMustReturnUnauthorizedStatus() {
-        var unauthorizedResponse = new CommonValidationResponse();
+        var unauthorizedResponse = CommonValidationResponse.init();
         unauthorizedResponse.setSuccess(false);
         unauthorizedResponse.setError(true);
         unauthorizedResponse.setMessage("Unauthorized!");

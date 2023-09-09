@@ -73,6 +73,7 @@ class FormularyTest {
     void validateMethodMustAddNewCriticIfTheEmailIsBlank(String email) {
         var formulary = new Formulary();
         formulary.setEmail(email);
+        formulary.setBirthday(LocalDate.of(2007, 3, 12));
         formulary.validate();
 
         assertTrue(formulary.hasCritics());

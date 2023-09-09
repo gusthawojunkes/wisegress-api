@@ -2,6 +2,7 @@ package wo.it.services;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.exceptions.EmptyParameterException;
 import wo.it.exceptions.InvalidFormularyException;
@@ -19,11 +20,11 @@ public class AuthService {
     @Inject ApplicationUserService applicationUserService;
 
     public CommonValidationResponse authenticate(Credential credentials) {
-        var response = CommonValidationResponse.initWithSuccess();
+        var response = CommonValidationResponse.init();
 
         ApplicationUser user;
         try {
-            user = applicationUserService.findByEmail(credentials.email());
+            user = applicationUserService.findByEmail(credentials.getEmail());
         } catch (EmptyParameterException exception) {
             response.makeInvalid();
             response.setMessage(exception.getMessage());
@@ -39,6 +40,12 @@ public class AuthService {
         if (user.isBlocked()) {
             response.makeInvalid();
             response.setMessage("Usuário bloqueado pelo sistema, entre em contato com o suporte!");
+            return response;
+        }
+
+        if (StringUtils.equals(user.getPassword(), credentials.getEncryptedPassword())) {
+            response.makeValid();
+            response.setUser(user.toModel());
         }
 
         return response;

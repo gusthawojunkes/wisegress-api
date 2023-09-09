@@ -16,4 +16,7 @@ public class EmptyParameterException extends Exception {
         this.parameterName = parameterName;
     }
 
+    public String getParameterName() {
+        return parameterName == null ? "" : parameterName;
+    }
 }

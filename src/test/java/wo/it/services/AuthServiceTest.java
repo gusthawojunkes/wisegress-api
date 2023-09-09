@@ -3,8 +3,6 @@ package wo.it.services;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,14 +30,6 @@ class AuthServiceTest {
     @Inject AuthService service;
     @InjectMock ApplicationUserService applicationUserService;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
     @DisplayName("`AuthService.authenticate()` must fill the response with an error if the `credential.email` parameter is blank")
     @ParameterizedTest(name = "When `credential.email` is \"{0}\" then the exception must be thrown")
     @NullSource
@@ -47,7 +37,7 @@ class AuthServiceTest {
     void authenticateMethodMustFillTheResponseWithAnErrorIfTheEmailParameterIsNull(String email) throws EmptyParameterException {
         Credential credential = new Credential(email, "1234");
 
-        when(applicationUserService.findByEmail(credential.email())).thenThrow(new EmptyParameterException("Por favor, informe em email para consultar um usuário"));
+        when(applicationUserService.findByEmail(credential.getEmail())).thenThrow(new EmptyParameterException("Por favor, informe em email para consultar um usuário"));
         var response = service.authenticate(credential);
 
         assertTrue(response.hasErrors());
@@ -93,8 +83,8 @@ class AuthServiceTest {
         Credential credential = new Credential("test@test.com", "1234");
 
         var user = new ApplicationUser();
-        user.setEmail(credential.email());
-        user.setPassword(credential.password());
+        user.setEmail(credential.getEmail());
+        user.setPassword(credential.getEncryptedPassword());
         user.setStatus(Status.ACTIVE);
 
         when(applicationUserService.findByEmail("test@test.com")).thenReturn(user);
