@@ -13,6 +13,7 @@ import wo.it.models.authentication.RegistrationResponse;
 import wo.it.services.AuthService;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +39,8 @@ class AuthControllerTest {
         .then()
         .body("success", is(false))
         .body("error", is(true))
+        .body("message", is("Unauthorized!"))
+        .body("user", equalTo(null))
         .statusCode(401);
     }
 
