@@ -9,8 +9,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import wo.it.database.entities.ApplicationUser;
-import wo.it.exceptions.EmptyParameterException;
-import wo.it.exceptions.PersistException;
+import wo.it.core.exceptions.EmptyParameterException;
+import wo.it.core.exceptions.PersistException;
 import wo.it.repositories.ApplicationUserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import wo.it.exceptions.EmptyParameterException;
-import wo.it.exceptions.EncryptException;
+import wo.it.core.exceptions.EncryptException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

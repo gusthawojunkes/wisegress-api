@@ -1,4 +1,4 @@
-package wo.it.exceptions;
+package wo.it.core.exceptions;
 
 public class EncryptException extends Exception {
     public EncryptException(String message) {

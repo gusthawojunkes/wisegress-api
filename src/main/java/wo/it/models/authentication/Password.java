@@ -1,7 +1,7 @@
 package wo.it.models.authentication;
 
 import org.apache.commons.lang3.StringUtils;
-import wo.it.exceptions.EncryptException;
+import wo.it.core.exceptions.EncryptException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

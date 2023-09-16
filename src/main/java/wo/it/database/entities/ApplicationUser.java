@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import wo.it.models.ApplicationUserModel;
-import wo.it.models.Status;
+import wo.it.core.enums.Status;
 
 import java.time.LocalDate;
 

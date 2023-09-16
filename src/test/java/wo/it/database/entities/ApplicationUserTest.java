@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import wo.it.models.Status;
+import wo.it.core.enums.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

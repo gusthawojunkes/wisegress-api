@@ -2,6 +2,7 @@ package wo.it.models;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
+import wo.it.core.enums.Status;
 import wo.it.database.entities.ApplicationUser;
 
 import java.time.LocalDate;

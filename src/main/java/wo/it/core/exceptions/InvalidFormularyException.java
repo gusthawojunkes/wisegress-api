@@ -1,4 +1,4 @@
-package wo.it.exceptions;
+package wo.it.core.exceptions;
 
 import lombok.Getter;
 import wo.it.models.authentication.RegistrationCritic;

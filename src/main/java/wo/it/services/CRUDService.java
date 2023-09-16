@@ -1,6 +1,6 @@
 package wo.it.services;
 
-import wo.it.exceptions.PersistException;
+import wo.it.core.exceptions.PersistException;
 
 import java.util.List;
 

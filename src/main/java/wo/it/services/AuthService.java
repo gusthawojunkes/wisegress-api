@@ -4,14 +4,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import wo.it.database.entities.ApplicationUser;
-import wo.it.exceptions.EmptyParameterException;
-import wo.it.exceptions.InvalidFormularyException;
-import wo.it.exceptions.PersistException;
-import wo.it.exceptions.UserAlreadyFoundException;
+import wo.it.core.exceptions.EmptyParameterException;
+import wo.it.core.exceptions.InvalidFormularyException;
+import wo.it.core.exceptions.PersistException;
+import wo.it.core.exceptions.UserAlreadyFoundException;
 import wo.it.models.ApplicationUserModel;
 import wo.it.models.authentication.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 
 @ApplicationScoped

@@ -2,6 +2,7 @@ package wo.it.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import wo.it.core.enums.Status;
 import wo.it.database.entities.ApplicationUser;
 
 import java.time.LocalDate;

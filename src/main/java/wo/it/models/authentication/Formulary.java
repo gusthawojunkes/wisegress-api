@@ -10,8 +10,7 @@ import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import wo.it.database.entities.ApplicationUser;
-import wo.it.exceptions.PersistException;
-import wo.it.models.Status;
+import wo.it.core.enums.Status;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
