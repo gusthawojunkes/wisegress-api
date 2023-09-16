@@ -18,7 +18,6 @@ public class ApplicationUserModel {
     private Status status;
     private LocalDateTime insertedAt;
     private LocalDateTime updatedAt;
-    private String token;
 
     public static ApplicationUserModel loadFrom(ApplicationUser user) {
         var model = new ApplicationUserModel();
