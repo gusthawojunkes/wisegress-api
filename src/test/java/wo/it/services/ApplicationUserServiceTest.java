@@ -24,7 +24,7 @@ class ApplicationUserServiceTest {
     @InjectMock ApplicationUserRepository applicationUserRepository;
 
 
-    @DisplayName("`AuthService.authenticate()` must fill the response with an error if the `credential.email` parameter is blank")
+    @DisplayName("`AuthService.findByEmail()` must throw an exception if the `email` is blank")
     @ParameterizedTest(name = "When `credential.email` is \"{0}\" then the exception must be thrown")
     @NullSource
     @ValueSource(strings = {"", " "})

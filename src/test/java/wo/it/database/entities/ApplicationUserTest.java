@@ -37,7 +37,7 @@ class ApplicationUserTest {
 
     @DisplayName("`ApplicationUser.toModel()` should set the correct values into the model")
     @Test
-    void isBlockedMethodShouldSetTheCorrectValuesIntoTheModel() {
+    void toModelMethodShouldSetTheCorrectValuesIntoTheModel() {
         var user = new ApplicationUser();
         var now = LocalDateTime.now();
 

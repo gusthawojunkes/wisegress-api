@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 import wo.it.core.enums.Priority;
+import wo.it.models.TodoModel;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +34,20 @@ public class Todo extends AbstractEntity {
 
     public Todo() {
         this.done = false;
+    }
+
+    public TodoModel toModel() {
+        var model = new TodoModel();
+
+        model.setUuid(this.getUuid());
+        model.setContent(this.getContent());
+        model.setDone(this.isDone());
+        model.setCompletedAt(this.getCompletedAt());
+        model.setInsertedAt(this.getInsertedAt());
+        model.setUpdatedAt(this.getUpdatedAt());
+        model.setPriority(this.getPriority());
+
+        return model;
     }
 
 }

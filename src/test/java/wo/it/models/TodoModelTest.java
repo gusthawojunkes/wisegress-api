@@ -44,4 +44,29 @@ class TodoModelTest {
 
         assertFalse(todo.isDone());
     }
+
+    @DisplayName("`TodoModel.toEntity()` should fill the model correctly")
+    @Test
+    void toEntityMethodShouldFillTheModelCorrectly() {
+        var insertedAt = LocalDateTime.now();
+        var updatedAt = LocalDateTime.now();
+        var uuid = UUID.randomUUID().toString();
+
+        var model = new TodoModel();
+        model.setInsertedAt(insertedAt);
+        model.setUpdatedAt(updatedAt);
+        model.setUuid(uuid);
+        model.setPriority(Priority.HIGHEST);
+        model.setContent("Todo");
+        model.setDone(true);
+
+        var todo = model.toEntity();
+
+        assertEquals(Priority.HIGHEST, todo.getPriority());
+        assertEquals(insertedAt, todo.getInsertedAt());
+        assertEquals(updatedAt, todo.getUpdatedAt());
+        assertEquals(uuid, todo.getUuid());
+        assertEquals("Todo", todo.getContent());
+        assertTrue(todo.isDone());
+    }
 }

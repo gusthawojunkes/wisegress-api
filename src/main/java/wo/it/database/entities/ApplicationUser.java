@@ -6,8 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 import wo.it.models.ApplicationUserModel;
 import wo.it.core.enums.Status;
+import wo.it.models.TodoModel;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class ApplicationUser extends AbstractEntity {
 
     public ApplicationUserModel toModel() {
         var model = new ApplicationUserModel();
+        List<TodoModel> todos = new ArrayList<>();
 
         model.setName(this.getName());
         model.setEmail(this.getEmail());
@@ -49,6 +52,14 @@ public class ApplicationUser extends AbstractEntity {
         model.setStatus(this.getStatus());
         model.setInsertedAt(this.getInsertedAt());
         model.setUpdatedAt(this.getUpdatedAt());
+
+        if (CollectionUtils.isNotEmpty(this.getTodos())) {
+            for (Todo todo : this.getTodos()) {
+                todos.add(TodoModel.loadFrom(todo));
+            }
+        }
+
+        model.setTodos(todos);
 
         return model;
     }

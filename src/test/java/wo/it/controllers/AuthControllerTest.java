@@ -6,7 +6,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import wo.it.models.CommonValidationResponse;
 import wo.it.models.authentication.AuthValidationResponse;
 import wo.it.models.authentication.Credential;
 import wo.it.models.authentication.Formulary;

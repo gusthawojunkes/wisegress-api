@@ -18,9 +18,9 @@ import wo.it.services.AuthService;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 
+@ApplicationScoped
 @Consumes("application/json")
 @Produces("application/json")
-@ApplicationScoped
 @Path("/auth")
 public class AuthController {
 

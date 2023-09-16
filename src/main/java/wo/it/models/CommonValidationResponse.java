@@ -20,8 +20,6 @@ public class CommonValidationResponse {
 
     protected String message;
 
-    protected ApplicationUserModel user;
-
     public boolean hasErrors() {
         return error;
     }
@@ -43,7 +41,6 @@ public class CommonValidationResponse {
     public void makeInvalid() {
         this.error = true;
         this.success = false;
-        this.setUser(null);
     }
 
     public void makeValid() {

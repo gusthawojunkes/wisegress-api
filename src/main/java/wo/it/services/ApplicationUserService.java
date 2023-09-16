@@ -16,11 +16,19 @@ import java.util.List;
 @ApplicationScoped
 public class ApplicationUserService implements CRUDService<ApplicationUser> {
 
-    @Inject ApplicationUserRepository applicationUserRepository;
+    @Inject ApplicationUserRepository repository;
 
     public ApplicationUser findByEmail(String email) throws EmptyParameterException {
         if (StringUtils.isBlank(email)) throw new EmptyParameterException("Por favor, informe em email para consultar um usuário");
-        return applicationUserRepository.findByEmail(email);
+        return repository.findByEmail(email);
+    }
+
+    public ApplicationUser findByUuid(String uuid) {
+        try {
+            return repository.findByUuid(uuid);
+        } catch (EmptyParameterException e) {
+            return null;
+        }
     }
 
     public ApplicationUser register(Formulary formulary) throws EmptyParameterException, UserAlreadyFoundException, InvalidFormularyException, PersistException {
@@ -60,7 +68,7 @@ public class ApplicationUserService implements CRUDService<ApplicationUser> {
         } catch (EncryptException e) {
             throw new PersistException(e.getMessage());
         }
-        applicationUserRepository.persist(entity);
+        repository.persist(entity);
     }
 
     @Override
