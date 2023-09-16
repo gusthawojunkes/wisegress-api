@@ -8,19 +8,19 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 public class CommonValidationResponse {
 
-    private CommonValidationResponse() {
+    public CommonValidationResponse() {
         this.error = false;
         this.success = false;
         this.message = StringUtils.EMPTY;
     }
 
-    private boolean success;
+    protected boolean success;
 
-    private boolean error;
+    protected boolean error;
 
-    private String message;
+    protected String message;
 
-    private ApplicationUserModel user;
+    protected ApplicationUserModel user;
 
     public boolean hasErrors() {
         return error;
@@ -31,17 +31,13 @@ public class CommonValidationResponse {
     }
 
     public boolean hasCritics() {
-        return StringUtils.isNotBlank(message) && (hasErrors() || !valid());
+        return StringUtils.isNotBlank(message) || hasErrors() || !valid();
     }
 
     public static CommonValidationResponse initWithSuccess() {
         var response = new CommonValidationResponse();
         response.setSuccess(true);
         return response;
-    }
-
-    public static CommonValidationResponse init() {
-        return new CommonValidationResponse();
     }
 
     public void makeInvalid() {

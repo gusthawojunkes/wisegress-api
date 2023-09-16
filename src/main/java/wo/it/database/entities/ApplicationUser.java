@@ -48,6 +48,6 @@ public class ApplicationUser extends AbstractEntity {
 
     @Override
     public String toString() {
-        return  String.format("[%s] %s (%s)", this.getStatus().getDescription(), this.getName(), this.getEmail());
+        return String.format("[%s] %s (%s)", this.getStatus().getDescription(), this.getName(), this.getEmail());
     }
 }

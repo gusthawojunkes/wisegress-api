@@ -77,6 +77,43 @@ class AuthServiceTest {
         assertEquals("Usuário bloqueado pelo sistema, entre em contato com o suporte!", response.getMessage());
     }
 
+    @DisplayName("`AuthService.authenticate()` must return an invalid response if the password is incorrect")
+    @Test
+    void authenticateMethodMustFillTheResponseWithAnErrorIfThePasswordIsIncorrect() throws EmptyParameterException {
+        Credential credential = new Credential("test@test.com", "123456");
+
+        var user = new ApplicationUser();
+        user.setStatus(Status.ACTIVE);
+        user.setPassword("wrongpass");
+
+
+        when(applicationUserService.findByEmail("test@test.com")).thenReturn(user);
+        var response = service.authenticate(credential);
+
+        assertTrue(response.hasErrors());
+        assertTrue(response.hasCritics());
+        assertFalse(response.isSuccess());
+        assertEquals("Senha incorreta!", response.getMessage());
+    }
+
+    @DisplayName("`AuthService.authenticate()` should not fill the response with an error if the password is correct")
+    @Test
+    void authenticateMethodShouldNotFillTheResponseWithAnErrorIfThePasswordIsCorrect() throws EmptyParameterException {
+        Credential credential = new Credential("test@test.com", "123456");
+
+        var user = new ApplicationUser();
+        user.setStatus(Status.ACTIVE);
+        user.setPassword("jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=");
+
+
+        when(applicationUserService.findByEmail("test@test.com")).thenReturn(user);
+        var response = service.authenticate(credential);
+
+        assertFalse(response.hasErrors());
+        assertFalse(response.hasCritics());
+        assertTrue(response.isSuccess());
+    }
+
     @DisplayName("`AuthService.authenticate()` must return a valid response")
     @Test
     void authenticateMethodMustFillTheResponseWithAValidResponse() throws EmptyParameterException {

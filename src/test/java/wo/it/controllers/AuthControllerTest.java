@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wo.it.models.CommonValidationResponse;
+import wo.it.models.authentication.AuthValidationResponse;
 import wo.it.models.authentication.Credential;
 import wo.it.models.authentication.Formulary;
 import wo.it.models.authentication.RegistrationResponse;
@@ -26,7 +27,7 @@ class AuthControllerTest {
     @DisplayName("When `AuthService.login()` has critics the endpoint must return unauthorized status code (401)")
     @Test
     void whenLoginEndpointHasCriticsThenMustReturnUnauthorizedStatus() {
-        var unauthorizedResponse = CommonValidationResponse.init();
+        var unauthorizedResponse = AuthValidationResponse.init();
         unauthorizedResponse.setSuccess(false);
         unauthorizedResponse.setError(true);
         unauthorizedResponse.setMessage("Unauthorized!");

@@ -8,6 +8,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import wo.it.models.CommonValidationResponse;
+import wo.it.models.authentication.AuthValidationResponse;
 import wo.it.models.authentication.Credential;
 import wo.it.models.authentication.Formulary;
 import wo.it.models.authentication.RegistrationResponse;
@@ -26,7 +27,7 @@ public class AuthController {
     @PermitAll
     @Path("/login")
     public Response login(@Valid Credential credential) {
-        CommonValidationResponse response = service.authenticate(credential);
+        AuthValidationResponse response = service.authenticate(credential);
 
         if (response.hasCritics()) {
             return Response.status(UNAUTHORIZED.getStatusCode()).entity(response).build();
