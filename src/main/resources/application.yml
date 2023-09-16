@@ -17,5 +17,15 @@ quarkus:
     database:
       generation: update
 
+  smallrye-jwt:
+    enabled: true
+
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: publickey.pem
+    issuer: localhost
+
 wisegress:
   message: "Hello from Wisegress!"

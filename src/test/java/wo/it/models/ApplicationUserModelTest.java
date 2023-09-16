@@ -40,5 +40,6 @@ class ApplicationUserModelTest {
         assertEquals(updatedAt, model.getUpdatedAt());
         assertEquals(uuid, model.getUuid());
         assertEquals(birthday, model.getBirthday());
+        assertNull(model.getToken());
     }
 }

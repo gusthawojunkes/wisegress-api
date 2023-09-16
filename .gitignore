@@ -44,3 +44,6 @@ nb-configuration.xml
 
 /src/main/resources/application-dev.yml
 /src/main/resources/application-test.yml
+
+/src/main/resources/publickey.pem
+/src/main/resources/privatekey.pem

@@ -9,18 +9,18 @@ import wo.it.exceptions.InvalidFormularyException;
 import wo.it.exceptions.PersistException;
 import wo.it.exceptions.UserAlreadyFoundException;
 import wo.it.models.ApplicationUserModel;
-import wo.it.models.CommonValidationResponse;
-import wo.it.models.authentication.Credential;
-import wo.it.models.authentication.Formulary;
-import wo.it.models.authentication.RegistrationResponse;
+import wo.it.models.authentication.*;
+
+import java.util.Collections;
+import java.util.HashSet;
 
 @ApplicationScoped
 public class AuthService {
 
     @Inject ApplicationUserService applicationUserService;
 
-    public CommonValidationResponse authenticate(Credential credentials) {
-        var response = CommonValidationResponse.init();
+    public AuthValidationResponse authenticate(Credential credentials) {
+        AuthValidationResponse response = AuthValidationResponse.init();
 
         ApplicationUser user;
         try {
@@ -43,9 +43,19 @@ public class AuthService {
             return response;
         }
 
-        if (StringUtils.equals(user.getPassword(), credentials.getEncryptedPassword())) {
-            response.makeValid();
-            response.setUser(user.toModel());
+        if (!StringUtils.equals(user.getPassword(), credentials.getEncryptedPassword())) {
+            response.makeInvalid();
+            response.setMessage("Senha incorreta!");
+            return response;
+        }
+
+        response.makeValid();
+        response.setUser(user.toModel());
+        try {
+            var token = Token.generate(user.getName(), new HashSet<>(), Long.MAX_VALUE, user.getEmail());
+            response.setToken(token);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return response;
