@@ -4,10 +4,11 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
-import wo.it.models.CommonValidationResponse;
 import wo.it.models.authentication.AuthValidationResponse;
 import wo.it.models.authentication.Credential;
 import wo.it.models.authentication.Formulary;
@@ -17,6 +18,8 @@ import wo.it.services.AuthService;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 
+@Consumes("application/json")
+@Produces("application/json")
 @ApplicationScoped
 @Path("/auth")
 public class AuthController {

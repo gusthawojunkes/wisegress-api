@@ -1,13 +1,17 @@
 package wo.it.database.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 import wo.it.models.ApplicationUserModel;
 import wo.it.core.enums.Status;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,6 +31,9 @@ public class ApplicationUser extends AbstractEntity {
 
     private Status status;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Todo> todos;
+
     public boolean isBlocked() {
         return this.status == Status.BLOCKED;
     }
@@ -44,6 +51,10 @@ public class ApplicationUser extends AbstractEntity {
         model.setUpdatedAt(this.getUpdatedAt());
 
         return model;
+    }
+
+    public List<Todo> getTodos() {
+        return this.todos == null ? new ArrayList<>() : this.todos;
     }
 
     @Override
