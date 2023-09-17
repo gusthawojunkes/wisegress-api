@@ -1,5 +1,8 @@
 package wo.it.models;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.Getter;
 import lombok.Setter;
 import wo.it.core.enums.Priority;
@@ -11,14 +14,18 @@ import java.time.LocalDateTime;
 @Setter
 public class TodoModel extends AbstractModel {
 
+    @NotBlank
     private String content;
 
+    @NotNull
     private boolean done;
 
+    @Null
     private LocalDateTime completedAt;
 
     private Priority priority = Priority.MEDIUM;
 
+    @NotBlank
     private String userUuid;
 
     public static TodoModel loadFrom(Todo todo) {

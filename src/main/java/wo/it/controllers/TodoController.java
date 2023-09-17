@@ -4,6 +4,7 @@ import io.quarkus.logging.Log;
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,7 @@ public class TodoController implements CRUDController<TodoModel> {
 
     @Override
     @POST
-    public Response create(TodoModel model) {
+    public Response create(@Valid TodoModel model) {
         var response = CommonValidationResponse.initWithSuccess();
 
         if (model.isDone()) {
@@ -45,7 +46,7 @@ public class TodoController implements CRUDController<TodoModel> {
 
         ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
         if (user == null) {
-            response.makeValid();
+            response.makeInvalid();
             response.setMessage("Usuário não encontrado. Não é possível cadastrar a TODO");
             return Response.status(NOT_FOUND).entity(response).build();
         }
