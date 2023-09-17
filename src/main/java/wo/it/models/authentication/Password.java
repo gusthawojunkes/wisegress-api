@@ -13,7 +13,7 @@ public class Password {
 
     public static String encrypt(String content) throws EncryptException {
         if (StringUtils.isBlank(content)) {
-            throw new EncryptException("A senha recebia para encriptação não pode ser vazia!");
+            throw new EncryptException("A senha recebida para encriptação não pode ser vazia!");
         }
 
         String encryptedPassword = null;

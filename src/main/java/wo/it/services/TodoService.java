@@ -4,7 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
-import wo.it.core.exceptions.EmptyParameterException;
+import wo.it.core.exceptions.EntityNotFoundException;
 import wo.it.core.exceptions.PersistException;
 import wo.it.database.entities.Todo;
 import wo.it.repositories.TodoRepository;
@@ -37,7 +37,12 @@ public class TodoService implements CRUDService<Todo> {
     }
 
     @Override
-    public void delete(String uuid) {
-
+    @Transactional
+    public void delete(String uuid) throws EntityNotFoundException {
+        var todo = repository.findByUuid(uuid);
+        if (todo == null) {
+            throw new EntityNotFoundException("Todo '" + uuid + "' não encontrado, registro não pode ser excluído!");
+        }
+        repository.delete(todo);
     }
 }

@@ -4,14 +4,14 @@ import io.quarkus.logging.Log;
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
+import wo.it.core.exceptions.EntityNotFoundException;
 import wo.it.core.exceptions.PersistException;
+import wo.it.core.response.CommonValidationResponse;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.database.entities.Todo;
-import wo.it.core.response.CommonValidationResponse;
 import wo.it.models.TodoModel;
 import wo.it.services.ApplicationUserService;
 import wo.it.services.TodoService;
@@ -29,7 +29,7 @@ public class TodoController implements CRUDController<TodoModel> {
 
     @Override
     @POST
-    public Response create(@Valid TodoModel model) {
+    public Response create(TodoModel model) {
         var response = CommonValidationResponse.initWithSuccess();
 
         if (model.isDone()) {
@@ -72,7 +72,6 @@ public class TodoController implements CRUDController<TodoModel> {
         }
 
         Todo todo = service.findByUuid(uuid);
-
         if (todo == null) {
             return Response.status(NOT_FOUND).build();
         }
@@ -89,7 +88,20 @@ public class TodoController implements CRUDController<TodoModel> {
     @Override
     @DELETE @Path("{uuid}")
     public Response delete(@PathParam("uuid") String uuid) {
-        return null;
+        if (StringUtils.isBlank(uuid)) {
+            return Response.status(BAD_REQUEST).entity("{ \"message\": The uuid cannot be empty }").build();
+        }
+
+        try {
+            service.delete(uuid);
+        } catch (EntityNotFoundException e) {
+            var response = new CommonValidationResponse();
+            response.makeInvalid();
+            response.setMessage("O TODO de UUID '" + uuid + "' não pode ser removido pois o registro não existe!");
+            return Response.status(NOT_FOUND).entity(response).build();
+        }
+
+        return Response.status(NO_CONTENT).build();
     }
 
 

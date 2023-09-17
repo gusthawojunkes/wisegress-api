@@ -11,17 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import wo.it.core.enums.Priority;
 import wo.it.core.exceptions.PersistException;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.database.entities.Todo;
 import wo.it.models.TodoModel;
 import wo.it.models.authentication.Token;
+import wo.it.repositories.TodoRepository;
 import wo.it.services.ApplicationUserService;
 import wo.it.services.TodoService;
 
 import java.util.HashSet;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -33,23 +36,63 @@ class TodoControllerTest {
     String token;
     @InjectMock ApplicationUserService applicationUserService;
     @InjectMock TodoService service;
+    @InjectMock TodoRepository repository;
 
     @BeforeEach
     void setup() throws Exception {
         this.token = Token.generate("test", new HashSet<>(), 30L, "test");
     }
 
-    @Disabled
     @DisplayName("When GET `/todo/{uuid}` has a blank uuid then endpoint must return a bad request status (400) ")
-    @Test
-    void whenTodoUuidIsBlankThenTheEndpointMustReturnBadRequestStatus() {
+    @ParameterizedTest(name = "When `uuid` is \"{0}\" then the exception must bw thrown")
+    @ValueSource(strings = {"   ", " "})
+    void whenTodoUuidIsBlankThenTheEndpointMustReturnBadRequestStatus(String uuid) {
         given().header("Authorization", "Bearer " + token)
-        .when().get("/1234")
+        .pathParam("uuid", uuid)
+        .when().get("/{uuid}")
         .then()
-        .statusCode(400);
+        .statusCode(400).log().all();
     }
 
-    @DisplayName("When POST `/todo` receive a todo that is already finished, it must return an internal server error (500)")
+    @DisplayName("When GET `/todo/{uuid}` has a invalid uuid then endpoint must return a not found status (404) ")
+    @Test
+    void whenTodoUuidDoesntExistsThenTheEndpointMustReturnNotFoundStatus() {
+        String uuid = "uuid_not_found";
+
+        when(service.findByUuid(uuid)).thenReturn(null);
+
+        given().header("Authorization", "Bearer " + token)
+        .pathParam("uuid", uuid)
+        .when().get("/{uuid}")
+        .then()
+        .statusCode(404).log().all();
+    }
+
+    @DisplayName("When GET `/todo/{uuid}` has a valid uuid then endpoint must the correspondent todo with a ok status (200) ")
+    @Test
+    void whenTodoUuidExistsThenTheEndpointMustReturnTheCorrespondentTodo() {
+        String uuid = "valid_uuid";
+        Todo todo = new Todo();
+        todo.setContent("TODO");
+        todo.setUuid(uuid);
+        todo.setDone(false);
+        todo.setPriority(Priority.MEDIUM);
+
+        when(service.findByUuid(uuid)).thenReturn(todo);
+
+        given().header("Authorization", "Bearer " + token)
+        .pathParam("uuid", uuid)
+        .when().get("/{uuid}")
+        .then()
+        .body("uuid", is(uuid))
+        .body("content", is("TODO"))
+        .body("done", is(false))
+        .body("priority", is("MEDIUM"))
+        .body("completedAt", equalTo(null))
+        .statusCode(200).log().all();
+    }
+
+    @DisplayName("When POST `/todo` has a invalid uuid then endpoint must return a bad request status (404)")
     @Test
     void whenTodoIsAlreadyDoneThenTheEndpointShouldReturnInternalSeverErrorStatusCode() {
         TodoModel model = new TodoModel();
@@ -120,6 +163,31 @@ class TodoControllerTest {
         .contentType(ContentType.JSON).body(model)
         .when().post()
         .then().statusCode(201).log().all();
+    }
+
+    @DisplayName("When DELETE `/todo/{uuid}` has a blank uuid then endpoint must return a bad request status (400) ")
+    @ParameterizedTest(name = "When `uuid` is \"{0}\" then the exception must bw thrown")
+    @ValueSource(strings = {"   ", " "})
+    void whenTodoUuidIsBlankForDeleteThenTheEndpointMustReturnBadRequestStatus(String uuid) {
+        given().header("Authorization", "Bearer " + token)
+        .pathParam("uuid", uuid)
+        .when().delete("/{uuid}")
+        .then()
+        .statusCode(400).log().all();
+    }
+
+    @DisplayName("When DELETE `/todo` receive a existent uuid, it must return an no content status code (404)")
+    @Test
+    void whenTodoDoesNotExistsThenTheEndpointShouldReturnNotFoundStatusCode() {
+        String uuid = "1234";
+        var todo = new Todo();
+        when(repository.findByUuid(uuid)).thenReturn(todo);
+        doNothing().when(repository).delete(todo);
+
+        given().header("Authentication", "Bearer " + token)
+        .pathParam("uuid", uuid)
+        .when().delete("/{uuid}")
+        .then().statusCode(204).log().all();
     }
 
 }
