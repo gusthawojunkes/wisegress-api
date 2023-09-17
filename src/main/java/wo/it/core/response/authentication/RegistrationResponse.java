@@ -1,10 +1,11 @@
-package wo.it.models.authentication;
+package wo.it.core.response.authentication;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 import wo.it.models.ApplicationUserModel;
+import wo.it.models.authentication.RegistrationCritic;
 
 import java.util.List;
 

@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import wo.it.core.exceptions.PersistException;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.database.entities.Todo;
-import wo.it.models.CommonValidationResponse;
+import wo.it.core.response.CommonValidationResponse;
 import wo.it.models.TodoModel;
 import wo.it.services.ApplicationUserService;
 import wo.it.services.TodoService;

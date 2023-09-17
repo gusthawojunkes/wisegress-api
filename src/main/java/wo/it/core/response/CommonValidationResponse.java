@@ -1,4 +1,4 @@
-package wo.it.models;
+package wo.it.core.response;
 
 import lombok.Getter;
 import lombok.Setter;

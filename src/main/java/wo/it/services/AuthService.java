@@ -3,6 +3,8 @@ package wo.it.services;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
+import wo.it.core.response.authentication.AuthValidationResponse;
+import wo.it.core.response.authentication.RegistrationResponse;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.core.exceptions.EmptyParameterException;
 import wo.it.core.exceptions.InvalidFormularyException;
