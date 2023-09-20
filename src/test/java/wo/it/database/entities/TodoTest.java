@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wo.it.core.enums.Priority;
 import wo.it.core.enums.Status;
+import wo.it.models.TodoModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,6 +48,33 @@ class TodoTest {
         assertEquals(model.getUuid(), todo.getUuid());
         assertEquals(model.getInsertedAt(), todo.getInsertedAt());
         assertEquals(model.getUpdatedAt(), todo.getUpdatedAt());
+    }
+
+    @DisplayName("`Todo.loadFrom()` should fill the object correctly")
+    @Test
+    void loadFromMethodShouldFillTheObjectCorrectly() {
+        var todo = new Todo();
+        var model = new TodoModel();
+        var now = LocalDateTime.now();
+
+        model.setUuid(UUID.randomUUID().toString());
+        model.setContent("Todo");
+        model.setDone(true);
+        model.setCompletedAt(now);
+        model.setInsertedAt(now);
+        model.setUpdatedAt(now);
+        model.setPriority(Priority.LOW);
+
+        todo.loadFrom(model);
+
+        assertNotNull(todo);
+        assertEquals(todo.getContent(), model.getContent());
+        assertEquals(todo.isDone(), model.isDone());
+        assertEquals(todo.getCompletedAt(), model.getCompletedAt());
+        assertEquals(todo.getPriority(), model.getPriority());
+        assertEquals(todo.getUuid(), model.getUuid());
+        assertEquals(todo.getInsertedAt(), model.getInsertedAt());
+        assertEquals(todo.getUpdatedAt(), model.getUpdatedAt());
     }
 
 }

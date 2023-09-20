@@ -92,9 +92,9 @@ class TodoControllerTest {
         .statusCode(200).log().all();
     }
 
-    @DisplayName("When POST `/todo` has a invalid uuid then endpoint must return a bad request status (404)")
+    @DisplayName("When POST `/todo` send a already done todo, the request must return a bad request status (400)")
     @Test
-    void whenTodoIsAlreadyDoneThenTheEndpointShouldReturnInternalSeverErrorStatusCode() {
+    void whenTodoIsAlreadyDoneThenTheEndpointShouldReturnBadRequestStatusCode() {
         TodoModel model = new TodoModel();
         model.setDone(true);
 
@@ -105,14 +105,14 @@ class TodoControllerTest {
         .body("success", is(false))
         .body("error", is(true))
         .body("message", is("Não é possível criar uma TODO já finalizada"))
-        .statusCode(500).log().all();
+        .statusCode(400).log().all();
     }
 
-    @DisplayName("When POST `/todo` receive a blank todo, it must return an internal server error (500)")
+    @DisplayName("When POST `/todo` receive a blank todo, it must return bad request status (400)")
     @ParameterizedTest(name = "When `todo.content` is \"{0}\" then the todo isn't valid")
     @NullSource
     @ValueSource(strings = {"   ", "", " "})
-    void whenTodoContentIsBlankThenTheEndpointShouldReturnInternalSeverErrorStatusCode(String content) {
+    void whenTodoContentIsBlankThenTheEndpointShouldReturnBadRequestStatusCode(String content) {
         TodoModel model = new TodoModel();
         model.setContent(content);
 
@@ -123,7 +123,7 @@ class TodoControllerTest {
         .body("success", is(false))
         .body("error", is(true))
         .body("message", is("Não é possível criar uma TODO sem uma descrição"))
-        .statusCode(500).log().all();
+        .statusCode(400).log().all();
     }
 
     @DisplayName("When POST `/todo` receive a invalid user, it must return an not found status code (404)")
@@ -188,6 +188,87 @@ class TodoControllerTest {
         .pathParam("uuid", uuid)
         .when().delete("/{uuid}")
         .then().statusCode(204).log().all();
+    }
+
+
+    @DisplayName("When PUT `/todo` receive a nonexistent uuid, the request must return a not found status (404)")
+    @Test
+    void whenTodoIsNonExistentThenTheRequestMustReturnANotFoundStatus() {
+        TodoModel model = new TodoModel();
+        model.setUuid("nonexistent");
+
+        when(service.findByUuid(model.getUuid())).thenReturn(null);
+
+        given().header("Authentication", "Bearer " + token)
+        .contentType(ContentType.JSON).body(model)
+        .when().put()
+        .then()
+        .body("success", is(false))
+        .body("error", is(true))
+        .body("message", is("O TODO de UUID '" + model.getUuid() + "' não pode ser atualizado pois o registro não existe!"))
+        .statusCode(404).log().all();
+    }
+
+    @DisplayName("When PUT `/todo` receive a invalid user, it must return an not found status code (404)")
+    @Test
+    void whenTodoReceiveANonExistentUserThenTheRequestMustReturnANotFoundStatus() {
+        TodoModel model = new TodoModel();
+        model.setContent("Uma TODO");
+        model.setUserUuid("1234");
+        model.setUuid("valid_uuid");
+
+        when(service.findByUuid(model.getUuid())).thenReturn(new Todo());
+        when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(null);
+
+        given().header("Authentication", "Bearer " + token)
+        .contentType(ContentType.JSON).body(model)
+        .when().put()
+        .then()
+        .body("success", is(false))
+        .body("error", is(true))
+        .body("message", is("Usuário não encontrado. Não é possível cadastrar a TODO"))
+        .statusCode(404).log().all();
+    }
+
+    @DisplayName("When PUT `/todo` receive a blank todo, it must return bad request status (400)")
+    @ParameterizedTest(name = "When `todo.content` is \"{0}\" then the todo isn't valid")
+    @NullSource
+    @ValueSource(strings = {"   ", "", " "})
+    void whenTodoContentIsBlankThenTheEndpointShouldReturnBadRequestStatusCodeOnUpdateEndpoint(String content) {
+        TodoModel model = new TodoModel();
+        model.setContent(content);
+        model.setUserUuid("1234");
+        model.setUuid("valid_uuid");
+
+        when(service.findByUuid(model.getUuid())).thenReturn(new Todo());
+        when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(new ApplicationUser());
+
+        given().header("Authentication", "Bearer " + token)
+        .contentType(ContentType.JSON).body(model)
+        .when().put()
+        .then()
+        .body("success", is(false))
+        .body("error", is(true))
+        .body("message", is("A descrição não pode estar em branco!"))
+        .statusCode(400).log().all();
+    }
+
+    @DisplayName("When PUT `/todo` receive a valid todo, it must return an no content status code (404)")
+    @Test
+    void whenTodoIsValidThenTheEndpointShouldReturnNotFoundStatusCode() {
+        TodoModel model = new TodoModel();
+        model.setContent("TODO");
+        model.setUserUuid("1234");
+        model.setUuid("valid_uuid");
+
+        when(service.findByUuid(model.getUuid())).thenReturn(new Todo());
+        when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(new ApplicationUser());
+
+        given().header("Authentication", "Bearer " + token)
+        .contentType(ContentType.JSON).body(model)
+        .when().put()
+        .then()
+        .statusCode(204).log().all();
     }
 
 }

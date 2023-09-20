@@ -32,8 +32,9 @@ public class TodoService implements CRUDService<Todo> {
     }
 
     @Override
+    @Transactional
     public void update(Todo entity) {
-
+        repository.getEntityManager().merge(entity);
     }
 
     @Override
