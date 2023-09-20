@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import wo.it.models.authentication.AuthValidationResponse;
+import wo.it.core.response.authentication.AuthValidationResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 

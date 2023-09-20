@@ -1,4 +1,4 @@
-package wo.it.models;
+package wo.it.core.response;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,8 +19,6 @@ public class CommonValidationResponse {
     protected boolean error;
 
     protected String message;
-
-    protected ApplicationUserModel user;
 
     public boolean hasErrors() {
         return error;
@@ -43,7 +41,6 @@ public class CommonValidationResponse {
     public void makeInvalid() {
         this.error = true;
         this.success = false;
-        this.setUser(null);
     }
 
     public void makeValid() {

@@ -1,12 +1,18 @@
 package wo.it.models;
 
 import io.quarkus.test.junit.QuarkusTest;
+import org.apache.commons.collections4.CollectionUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wo.it.core.enums.Status;
 import wo.it.database.entities.ApplicationUser;
+import wo.it.database.entities.Todo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTest
 class ApplicationUserModelTest {
 
+    @DisplayName("`ApplicationUserModel.loadFrom()` should fill the model correctly")
     @Test
     void loadFromMethodMustFillTheModelCorrectly() {
         var insertedAt = LocalDateTime.now();
@@ -31,6 +38,9 @@ class ApplicationUserModelTest {
         user.setBirthday(birthday);
         user.setUuid(uuid);
 
+        List<Todo> todos = List.of(new Todo());
+        user.setTodos(todos);
+
         var model = ApplicationUserModel.loadFrom(user);
 
         assertEquals("Gusthawo Junkes", model.getName());
@@ -41,5 +51,7 @@ class ApplicationUserModelTest {
         assertEquals(updatedAt, model.getUpdatedAt());
         assertEquals(uuid, model.getUuid());
         assertEquals(birthday, model.getBirthday());
+        assertNotNull(model.getTodos());
+        assertEquals(1, CollectionUtils.size(model.getTodos()));
     }
 }

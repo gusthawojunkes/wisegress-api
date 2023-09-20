@@ -20,7 +20,7 @@ class PasswordTest {
             Password.encrypt(password);
         });
 
-        assertEquals("A senha recebia para encriptação não pode ser vazia!", exception.getMessage());
+        assertEquals("A senha recebida para encriptação não pode ser vazia!", exception.getMessage());
     }
 
     @DisplayName("`Password.encrypt()` must not be null")

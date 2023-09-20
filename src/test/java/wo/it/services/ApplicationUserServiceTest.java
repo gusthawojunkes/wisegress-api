@@ -13,18 +13,17 @@ import wo.it.core.exceptions.EmptyParameterException;
 import wo.it.core.exceptions.PersistException;
 import wo.it.repositories.ApplicationUserRepository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @QuarkusTest
 class ApplicationUserServiceTest {
 
     @Inject ApplicationUserService service;
-    @InjectMock ApplicationUserRepository applicationUserRepository;
+    @InjectMock ApplicationUserRepository repository;
 
 
-    @DisplayName("`AuthService.authenticate()` must fill the response with an error if the `credential.email` parameter is blank")
+    @DisplayName("`AuthService.findByEmail()` must throw an exception if the `email` is blank")
     @ParameterizedTest(name = "When `credential.email` is \"{0}\" then the exception must be thrown")
     @NullSource
     @ValueSource(strings = {"", " "})
@@ -48,10 +47,20 @@ class ApplicationUserServiceTest {
             service.create(user);
         });
 
-        assertEquals("A senha recebia para encriptação não pode ser vazia!", exception.getMessage());
+        assertEquals("A senha recebida para encriptação não pode ser vazia!", exception.getMessage());
 
-        doNothing().when(applicationUserRepository).persist(user);
-        verify(applicationUserRepository, times(0)).persist(user);
+        doNothing().when(repository).persist(user);
+        verify(repository, times(0)).persist(user);
+    }
+
+    @DisplayName("`ApplicationUserService.findByUuid()` should return null if the `uuid` is blank")
+    @ParameterizedTest(name = "When `uuid` is \"{0}\" then the user must be null")
+    @NullSource
+    @ValueSource(strings = {"", " "})
+    void findByUuidMethodShouldReturnNullIfTheUuidIsBlank(String uuid) throws EmptyParameterException {
+        when(repository.findByUuid(uuid)).thenReturn(null);
+        var user = service.findByUuid(uuid);
+        assertNull(user);
     }
 
 }

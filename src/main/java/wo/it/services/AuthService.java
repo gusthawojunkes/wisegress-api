@@ -3,6 +3,8 @@ package wo.it.services;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
+import wo.it.core.response.authentication.AuthValidationResponse;
+import wo.it.core.response.authentication.RegistrationResponse;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.core.exceptions.EmptyParameterException;
 import wo.it.core.exceptions.InvalidFormularyException;
@@ -51,7 +53,7 @@ public class AuthService {
         response.makeValid();
         response.setUser(user.toModel());
         try {
-            var token = Token.generate(user.getName(), new HashSet<>(), Long.MAX_VALUE, user.getEmail());
+            var token = Token.generate(user.getName(), new HashSet<>(), 3600L, user.getEmail());
             response.setToken(token);
         } catch (Exception e) {
             e.printStackTrace();

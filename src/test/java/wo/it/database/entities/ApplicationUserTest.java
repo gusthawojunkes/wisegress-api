@@ -8,6 +8,7 @@ import wo.it.core.enums.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -36,7 +37,7 @@ class ApplicationUserTest {
 
     @DisplayName("`ApplicationUser.toModel()` should set the correct values into the model")
     @Test
-    void isBlockedMethodShouldSetTheCorrectValuesIntoTheModel() {
+    void toModelMethodShouldSetTheCorrectValuesIntoTheModel() {
         var user = new ApplicationUser();
         var now = LocalDateTime.now();
 
@@ -72,6 +73,14 @@ class ApplicationUserTest {
         user.setStatus(status);
 
         assertEquals(expected, user.toString());
+    }
+    @DisplayName("`ApplicationUser.getTodos()` should return a `new ArrayList<>()` if the `todos` property is null")
+    @Test
+    void getTodosMethodShouldReturnANewArrayListIfTheTodosPropertyIsNull() {
+        var user = new ApplicationUser();
+        user.setTodos(null);
+
+        assertEquals(user.getTodos(), new ArrayList<>());
     }
 
 

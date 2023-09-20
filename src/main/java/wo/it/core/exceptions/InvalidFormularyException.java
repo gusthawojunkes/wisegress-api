@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 public class InvalidFormularyException extends Exception {
 
-    private List<RegistrationCritic> critics;
+    private final List<RegistrationCritic> critics;
 
     public InvalidFormularyException (String message, List<RegistrationCritic> critics) {
         super(message);
