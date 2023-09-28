@@ -41,17 +41,8 @@ public class ApplicationUser extends AbstractEntity {
     }
 
     public ApplicationUserModel toModel() {
-        var model = new ApplicationUserModel();
+        var model = this.toFlatModel();
         List<TodoModel> todos = new ArrayList<>();
-
-        model.setName(this.getName());
-        model.setEmail(this.getEmail());
-        model.setPassword(this.getPassword());
-        model.setBirthday(this.getBirthday());
-        model.setUuid(this.getUuid());
-        model.setStatus(this.getStatus());
-        model.setInsertedAt(this.getInsertedAt());
-        model.setUpdatedAt(this.getUpdatedAt());
 
         if (CollectionUtils.isNotEmpty(this.getTodos())) {
             for (Todo todo : this.getTodos()) {
@@ -61,6 +52,19 @@ public class ApplicationUser extends AbstractEntity {
 
         model.setTodos(todos);
 
+        return model;
+    }
+
+    public ApplicationUserModel toFlatModel() {
+        var model = new ApplicationUserModel();
+        model.setName(this.getName());
+        model.setEmail(this.getEmail());
+        model.setPassword(this.getPassword());
+        model.setBirthday(this.getBirthday());
+        model.setUuid(this.getUuid());
+        model.setStatus(this.getStatus());
+        model.setInsertedAt(this.getInsertedAt());
+        model.setUpdatedAt(this.getUpdatedAt());
         return model;
     }
 

@@ -51,7 +51,7 @@ public class AuthService {
         }
 
         response.makeValid();
-        response.setUser(user.toModel());
+        response.setUser(user.toFlatModel());
         try {
             var token = Token.generate(user.getName(), new HashSet<>(), 3600L, user.getEmail());
             response.setToken(token);

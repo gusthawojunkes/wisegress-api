@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import wo.it.core.enums.Status;
+import wo.it.models.TodoModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -40,6 +42,7 @@ class ApplicationUserTest {
     void toModelMethodShouldSetTheCorrectValuesIntoTheModel() {
         var user = new ApplicationUser();
         var now = LocalDateTime.now();
+        List<Todo> todos = List.of(new Todo(), new Todo(), new Todo());
 
         user.setName("Gusthawo");
         user.setEmail("test@test.com");
@@ -49,6 +52,7 @@ class ApplicationUserTest {
         user.setStatus(Status.ACTIVE);
         user.setInsertedAt(now);
         user.setUpdatedAt(now);
+        user.setTodos(todos);
 
         var model = user.toModel();
 
@@ -61,6 +65,8 @@ class ApplicationUserTest {
         assertEquals(model.getStatus(), user.getStatus());
         assertEquals(model.getInsertedAt(), user.getInsertedAt());
         assertEquals(model.getUpdatedAt(), user.getUpdatedAt());
+        assertNotNull(model.getTodos());
+        assertEquals(model.getTodos().size(), 3);
     }
 
     @DisplayName("`ApplicationUser.toString()` must return a string in the valid pattern")
@@ -81,6 +87,34 @@ class ApplicationUserTest {
         user.setTodos(null);
 
         assertEquals(user.getTodos(), new ArrayList<>());
+    }
+
+    @DisplayName("`ApplicationUser.toFlatModel()` should set the correct values into the model")
+    @Test
+    void toFlatModelMethodShouldSetTheCorrectValuesIntoTheModel() {
+        var user = new ApplicationUser();
+        var now = LocalDateTime.now();
+
+        user.setName("Gusthawo");
+        user.setEmail("test@test.com");
+        user.setPassword("12345");
+        user.setBirthday(LocalDate.of(2002, 10, 17));
+        user.setUuid(UUID.randomUUID().toString());
+        user.setStatus(Status.ACTIVE);
+        user.setInsertedAt(now);
+        user.setUpdatedAt(now);
+
+        var model = user.toFlatModel();
+
+        assertNotNull(model);
+        assertEquals(model.getName(), user.getName());
+        assertEquals(model.getEmail(), user.getEmail());
+        assertEquals(model.getPassword(), user.getPassword());
+        assertEquals(model.getBirthday(), user.getBirthday());
+        assertEquals(model.getUuid(), user.getUuid());
+        assertEquals(model.getStatus(), user.getStatus());
+        assertEquals(model.getInsertedAt(), user.getInsertedAt());
+        assertEquals(model.getUpdatedAt(), user.getUpdatedAt());
     }
 
 
