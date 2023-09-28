@@ -77,4 +77,40 @@ class TodoTest {
         assertEquals(todo.getUpdatedAt(), model.getUpdatedAt());
     }
 
+    @DisplayName("`Todo.loadFieldsToUpdate()` should fill the object correctly")
+    @Test
+    void loadFieldsToUpdateMethodShouldFillTheObjectCorrectly() {
+        var todo = new Todo();
+        var model = new TodoModel();
+        var now = LocalDateTime.now();
+
+        model.setUuid(UUID.randomUUID().toString());
+        model.setContent("Todo");
+        model.setDone(true);
+        model.setCompletedAt(now);
+        model.setPriority(Priority.LOW);
+
+        todo.loadFieldsToUpdate(model);
+
+        assertNotNull(todo);
+        assertEquals(todo.getContent(), model.getContent());
+        assertEquals(todo.isDone(), model.isDone());
+        assertEquals(todo.getCompletedAt(), model.getCompletedAt());
+        assertEquals(todo.getPriority(), model.getPriority());
+        assertEquals(todo.getUuid(), model.getUuid());
+    }
+
+    @DisplayName("`Todo.loadFieldsToUpdate()` should update `completedAt` with the current timestamp when `done` changes from `false` to `true`")
+    @Test
+    void loadFieldsToUpdateMethodShouldUpdateTheCompletedAtPropertyWhenDonePropertyChangesFromFalseToTrue() {
+        var todo = new Todo();
+        var model = new TodoModel();
+        model.setDone(true);
+
+        todo.loadFieldsToUpdate(model);
+
+        assertNotNull(todo);
+        assertNotNull(todo.getCompletedAt());
+    }
+
 }

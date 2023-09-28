@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import wo.it.core.exceptions.EntityNotFoundException;
 import wo.it.core.exceptions.PersistException;
+import wo.it.core.interfaces.CRUDController;
 import wo.it.core.response.CommonValidationResponse;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.database.entities.Todo;
@@ -103,7 +104,8 @@ public class TodoController implements CRUDController<TodoModel> {
             return Response.status(BAD_REQUEST).entity(response).build();
         }
 
-        todo.loadFrom(model);
+        todo.loadFieldsToUpdate(model);
+
         service.update(todo);
 
         return Response.status(NO_CONTENT).build();

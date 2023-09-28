@@ -1,13 +1,13 @@
 package wo.it.repositories;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.commons.lang3.StringUtils;
 import wo.it.core.exceptions.EmptyParameterException;
+import wo.it.core.interfaces.Repository;
 import wo.it.database.entities.ApplicationUser;
 
 @ApplicationScoped
-public class ApplicationUserRepository implements PanacheRepository<ApplicationUser> {
+public class ApplicationUserRepository implements Repository<ApplicationUser> {
 
     public ApplicationUser findByEmail(String email) {
         return find("email", email).firstResult();

@@ -1,4 +1,4 @@
-package wo.it.services;
+package wo.it.core.interfaces;
 
 import wo.it.core.exceptions.EntityNotFoundException;
 import wo.it.core.exceptions.PersistException;

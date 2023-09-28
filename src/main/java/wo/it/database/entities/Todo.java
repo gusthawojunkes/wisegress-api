@@ -60,4 +60,15 @@ public class Todo extends AbstractEntity {
         this.setPriority(model.getPriority());
     }
 
+    public void loadFieldsToUpdate(TodoModel model) {
+        this.setUuid(model.getUuid());
+        this.setContent(model.getContent());
+        this.setCompletedAt(model.getCompletedAt());
+        if (!this.isDone() && model.isDone()) {
+            this.setCompletedAt(LocalDateTime.now());
+        }
+        this.setDone(model.isDone());
+        this.setPriority(model.getPriority());
+    }
+
 }
