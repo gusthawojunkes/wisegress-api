@@ -1,14 +1,11 @@
 package wo.it.database.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
-import wo.it.models.ApplicationUserModel;
 import wo.it.core.enums.Status;
+import wo.it.models.ApplicationUserModel;
 import wo.it.models.TodoModel;
 
 import java.time.LocalDate;
@@ -36,6 +33,13 @@ public class ApplicationUser extends AbstractEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Todo> todos;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Event> events;
+
+    @OneToOne
+    @JoinColumn(name = "preferences_uuid", referencedColumnName = "uuid")
+    private Preferences preferences;
+
     public boolean isBlocked() {
         return this.status == Status.BLOCKED;
     }
@@ -44,8 +48,8 @@ public class ApplicationUser extends AbstractEntity {
         var model = this.toFlatModel();
         List<TodoModel> todos = new ArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(this.getTodos())) {
-            for (Todo todo : this.getTodos()) {
+        if (CollectionUtils.isNotEmpty(this.todos)) {
+            for (Todo todo : this.todos) {
                 todos.add(TodoModel.loadFrom(todo));
             }
         }
@@ -65,6 +69,9 @@ public class ApplicationUser extends AbstractEntity {
         model.setStatus(this.getStatus());
         model.setInsertedAt(this.getInsertedAt());
         model.setUpdatedAt(this.getUpdatedAt());
+        if (this.preferences != null) {
+            model.setPreferences(preferences.toModel());
+        }
         return model;
     }
 

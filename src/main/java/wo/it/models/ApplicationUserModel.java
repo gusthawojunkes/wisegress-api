@@ -20,6 +20,7 @@ public class ApplicationUserModel extends AbstractModel {
     private String password;
     private LocalDate birthday;
     private Status status;
+    private PreferencesModel preferences;
     private List<TodoModel> todos;
 
     public static ApplicationUserModel loadFrom(ApplicationUser user) {

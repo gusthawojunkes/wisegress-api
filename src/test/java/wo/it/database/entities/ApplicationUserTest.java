@@ -53,6 +53,9 @@ class ApplicationUserTest {
         user.setInsertedAt(now);
         user.setUpdatedAt(now);
         user.setTodos(todos);
+        var preferences = new Preferences();
+        preferences.setPomodoroConfiguration(new PomodoroConfiguration());
+        user.setPreferences(preferences);
 
         var model = user.toModel();
 
@@ -66,7 +69,8 @@ class ApplicationUserTest {
         assertEquals(model.getInsertedAt(), user.getInsertedAt());
         assertEquals(model.getUpdatedAt(), user.getUpdatedAt());
         assertNotNull(model.getTodos());
-        assertEquals(model.getTodos().size(), 3);
+        assertEquals(3, model.getTodos().size());
+        assertNotNull(model.getPreferences());
     }
 
     @DisplayName("`ApplicationUser.toString()` must return a string in the valid pattern")
