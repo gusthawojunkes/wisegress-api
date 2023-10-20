@@ -1,8 +1,10 @@
 package wo.it.models;
 
+import lombok.Getter;
 import lombok.Setter;
 
 @Setter
+@Getter
 public class PreferencesModel extends AbstractModel {
 
     private PomodoroConfigurationModel pomodoroConfiguration;

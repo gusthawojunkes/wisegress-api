@@ -11,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.core.enums.Status;
+import wo.it.database.entities.PomodoroConfiguration;
 import wo.it.database.entities.Preferences;
 
 import java.time.LocalDate;
@@ -66,7 +67,9 @@ public class Formulary {
         user.setBirthday(this.getBirthday());
         user.setName(this.getName());
         user.setStatus(Status.ACTIVE);
-        user.setPreferences(new Preferences());
+        var preferences = new Preferences();
+        preferences.setPomodoroConfiguration(new PomodoroConfiguration());
+        user.setPreferences(preferences);
         return user;
     }
 

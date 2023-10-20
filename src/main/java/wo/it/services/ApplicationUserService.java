@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import wo.it.core.exceptions.*;
 import wo.it.core.interfaces.CRUDService;
 import wo.it.database.entities.ApplicationUser;
+import wo.it.database.entities.PomodoroConfiguration;
+import wo.it.database.entities.Preferences;
 import wo.it.models.authentication.Formulary;
 import wo.it.models.authentication.Password;
 import wo.it.repositories.ApplicationUserRepository;
@@ -63,12 +65,22 @@ public class ApplicationUserService implements CRUDService<ApplicationUser> {
     @Override
     @Transactional
     public void create(ApplicationUser entity) throws PersistException {
+        Preferences preferences = entity.getPreferences();
+        PomodoroConfiguration pomodoroConfiguration = preferences.getPomodoroConfiguration();
+
         try {
             String encryptedPassword = Password.encrypt(entity.getPassword());
             entity.setPassword(encryptedPassword);
         } catch (EncryptException e) {
             throw new PersistException(e.getMessage());
         }
+
+        pomodoroConfiguration.persist();
+        preferences.setPomodoroConfiguration(pomodoroConfiguration);
+        preferences.persist();
+        pomodoroConfiguration.setPreferences(preferences);
+        entity.setPreferences(preferences);
+
         repository.persist(entity);
     }
 

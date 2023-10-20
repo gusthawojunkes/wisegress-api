@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 import wo.it.core.enums.Status;
 import wo.it.database.entities.ApplicationUser;
+import wo.it.database.entities.Preferences;
 import wo.it.database.entities.Todo;
 
 import java.time.LocalDate;
@@ -41,6 +42,7 @@ public class ApplicationUserModel extends AbstractModel {
             }
         }
 
+        model.setPreferences(user.getPreferences().toModel());
         model.setTodos(todos);
 
         return model;
