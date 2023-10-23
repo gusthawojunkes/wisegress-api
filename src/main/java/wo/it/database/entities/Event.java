@@ -27,7 +27,7 @@ public class Event extends AbstractEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "applicationuser_uuid", referencedColumnName = "uuid")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
     private ApplicationUser user;
 
 }

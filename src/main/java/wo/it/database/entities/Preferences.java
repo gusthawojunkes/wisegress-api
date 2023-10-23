@@ -14,7 +14,7 @@ import wo.it.models.PreferencesModel;
 public class Preferences extends AbstractEntity {
 
     @OneToOne(mappedBy = "preferences", optional = false)
-    @JoinColumn(name = "applicationuser_uuid", referencedColumnName = "uuid")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
     private ApplicationUser user;
 
     @OneToOne(mappedBy = "preferences", optional = false)

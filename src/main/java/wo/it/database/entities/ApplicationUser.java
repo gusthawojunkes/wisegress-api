@@ -36,6 +36,9 @@ public class ApplicationUser extends AbstractEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Event> events;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Feedback> feedbacks;
+
     @OneToOne
     @JoinColumn(name = "preferences_uuid", referencedColumnName = "uuid")
     private Preferences preferences;

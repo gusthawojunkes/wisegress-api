@@ -49,4 +49,9 @@ public class CommonValidationResponse {
         this.message = StringUtils.EMPTY;
     }
 
+    public void setErrorMessage(String message) {
+        this.makeValid();
+        this.setMessage(message);
+    }
+
 }

@@ -29,7 +29,7 @@ public class Todo extends AbstractEntity {
     private Priority priority = Priority.MEDIUM;
 
     @ManyToOne
-    @JoinColumn(name = "applicationuser_uuid", referencedColumnName = "uuid")
+    @JoinColumn(name = "user_uuid", referencedColumnName = "uuid")
     private ApplicationUser user;
 
     public Todo() {
