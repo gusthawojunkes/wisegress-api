@@ -90,7 +90,11 @@ class TodoTest {
         model.setCompletedAt(now);
         model.setPriority(Priority.LOW);
 
-        todo.loadFieldsToUpdate(model);
+        try {
+            todo.loadFieldsToUpdate(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assertNotNull(todo);
         assertEquals(todo.getContent(), model.getContent());
@@ -107,7 +111,11 @@ class TodoTest {
         var model = new TodoModel();
         model.setDone(true);
 
-        todo.loadFieldsToUpdate(model);
+        try {
+            todo.loadFieldsToUpdate(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assertNotNull(todo);
         assertNotNull(todo.getCompletedAt());

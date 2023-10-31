@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import wo.it.core.enums.Status;
 import wo.it.database.entities.ApplicationUser;
+import wo.it.database.entities.PomodoroConfiguration;
+import wo.it.database.entities.Preferences;
 import wo.it.database.entities.Todo;
 
 import java.time.LocalDate;
@@ -23,6 +25,9 @@ class ApplicationUserModelTest {
     @DisplayName("`ApplicationUserModel.loadFrom()` should fill the model correctly")
     @Test
     void loadFromMethodMustFillTheModelCorrectly() {
+        Preferences preferences = new Preferences();
+        preferences.setPomodoroConfiguration(new PomodoroConfiguration());
+
         var insertedAt = LocalDateTime.now();
         var updatedAt = LocalDateTime.now();
         var birthday = LocalDate.now();
@@ -37,6 +42,7 @@ class ApplicationUserModelTest {
         user.setUpdatedAt(updatedAt);
         user.setBirthday(birthday);
         user.setUuid(uuid);
+        user.setPreferences(preferences);
 
         List<Todo> todos = List.of(new Todo());
         user.setTodos(todos);

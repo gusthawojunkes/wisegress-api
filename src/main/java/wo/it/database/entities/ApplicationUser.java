@@ -39,6 +39,9 @@ public class ApplicationUser extends AbstractEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Feedback> feedbacks;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Task> tasks;
+
     @OneToOne
     @JoinColumn(name = "preferences_uuid", referencedColumnName = "uuid")
     private Preferences preferences;

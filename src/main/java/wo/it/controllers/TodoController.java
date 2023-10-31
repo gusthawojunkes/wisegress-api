@@ -29,11 +29,12 @@ public class TodoController implements CRUDController<TodoModel> {
     @Inject ApplicationUserService applicationUserService;
 
     @Override
+    @Authenticated
     @POST
     public Response create(TodoModel model) {
         var response = CommonValidationResponse.initWithSuccess();
 
-        if (model.isDone()) {
+        if (model.isDone() || model.getCompletedAt() != null) {
             response.setErrorMessage("Não é possível criar uma TODO já finalizada");
             return Response.status(BAD_REQUEST).entity(response).build();
         }
@@ -67,7 +68,7 @@ public class TodoController implements CRUDController<TodoModel> {
     @GET @Path("{uuid}")
     public Response find(@PathParam("uuid") String uuid) {
         if (StringUtils.isBlank(uuid)) {
-            return Response.status(BAD_REQUEST).entity("{ \"message\": The uuid cannot be empty }").build();
+            return Response.status(BAD_REQUEST).entity("{ \"message\": O UUID da TODO não pode ser vazio }").build();
         }
 
         Todo todo = service.findByUuid(uuid);
@@ -79,34 +80,41 @@ public class TodoController implements CRUDController<TodoModel> {
     }
 
     @Override
+    @Authenticated
     @PUT
     public Response update(TodoModel model) {
         var response = CommonValidationResponse.initWithSuccess();
-        Todo todo = service.findByUuid(model.getUuid());
-        if (todo == null) {
-            response.setErrorMessage("O TODO de UUID '" + model.getUuid() + "' não pode ser atualizado pois o registro não existe!");
-            return Response.status(NOT_FOUND).entity(response).build();
+        try {
+            Todo todo = service.findByUuid(model.getUuid());
+            if (todo == null) {
+                response.setErrorMessage("O TODO de UUID '" + model.getUuid() + "' não pode ser atualizado pois o registro não existe!");
+                return Response.status(NOT_FOUND).entity(response).build();
+            }
+
+            ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
+            if (user == null) {
+                response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a TODO");
+                return Response.status(NOT_FOUND).entity(response).build();
+            }
+
+            if (StringUtils.isBlank(model.getContent())) {
+                response.setErrorMessage("A descrição não pode estar em branco!");
+                return Response.status(BAD_REQUEST).entity(response).build();
+            }
+
+            todo.loadFieldsToUpdate(model);
+
+            service.update(todo);
+        } catch (Exception e) {
+            response.setErrorMessage(e.getMessage());
+            return Response.status(INTERNAL_SERVER_ERROR).entity(response).build();
         }
-
-        ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
-        if (user == null) {
-            response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a TODO");
-            return Response.status(NOT_FOUND).entity(response).build();
-        }
-
-        if (StringUtils.isBlank(model.getContent())) {
-            response.setErrorMessage("A descrição não pode estar em branco!");
-            return Response.status(BAD_REQUEST).entity(response).build();
-        }
-
-        todo.loadFieldsToUpdate(model);
-
-        service.update(todo);
 
         return Response.status(NO_CONTENT).build();
     }
 
     @Override
+    @Authenticated
     @DELETE @Path("{uuid}")
     public Response delete(@PathParam("uuid") String uuid) {
         if (StringUtils.isBlank(uuid)) {

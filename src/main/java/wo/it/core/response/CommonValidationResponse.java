@@ -50,7 +50,7 @@ public class CommonValidationResponse {
     }
 
     public void setErrorMessage(String message) {
-        this.makeValid();
+        this.makeInvalid();
         this.setMessage(message);
     }
 

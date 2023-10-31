@@ -11,6 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.core.exceptions.EmptyParameterException;
 import wo.it.core.exceptions.PersistException;
+import wo.it.database.entities.PomodoroConfiguration;
+import wo.it.database.entities.Preferences;
 import wo.it.repositories.ApplicationUserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +44,9 @@ class ApplicationUserServiceTest {
         var user = new ApplicationUser();
         user.setName("Gusthawo");
         user.setPassword(null);
+        var preferences = new Preferences();
+        preferences.setPomodoroConfiguration(new PomodoroConfiguration());
+        user.setPreferences(preferences);
 
         PersistException exception = assertThrows(PersistException.class, () -> {
             service.create(user);

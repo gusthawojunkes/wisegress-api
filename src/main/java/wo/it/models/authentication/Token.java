@@ -15,6 +15,12 @@ import java.util.Set;
 
 public class Token {
 
+    private Token() {}
+
+    public static String generate(String username, Long duration, String issuer) throws Exception {
+        return generate(username, new HashSet<>(), duration, issuer);
+    }
+
     public static String generate(String username, Set<Role> roles, Long duration, String issuer) throws Exception {
         String privateKeyLocation = "/privatekey.pem";
         PrivateKey privateKey = readPrivateKey(privateKeyLocation);

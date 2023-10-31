@@ -1,6 +1,7 @@
 package wo.it.controllers;
 
 import io.quarkus.logging.Log;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -28,6 +29,7 @@ public class FeedbackController {
 
     @Inject ApplicationUserService applicationUserService;
 
+    @Authenticated
     @POST
     public Response create(FeedbackModel model) {
         var response = CommonValidationResponse.initWithSuccess();
@@ -35,7 +37,7 @@ public class FeedbackController {
         ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
         if (user == null) {
             response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar o feedback");
-            return Response.status(NOT_FOUND).entity(response).build();
+            return Response.status(BAD_REQUEST).entity(response).build();
         }
 
         if (model.getFeature() == null) {

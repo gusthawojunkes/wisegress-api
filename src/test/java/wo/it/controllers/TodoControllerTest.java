@@ -4,6 +4,7 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -33,21 +34,21 @@ import static org.mockito.Mockito.when;
 @TestHTTPEndpoint(TodoController.class)
 class TodoControllerTest {
 
-    String token;
+    RequestSpecification authorizedRequest;
     @InjectMock ApplicationUserService applicationUserService;
     @InjectMock TodoService service;
     @InjectMock TodoRepository repository;
 
     @BeforeEach
     void setup() throws Exception {
-        this.token = Token.generate("test", new HashSet<>(), 30L, "test");
+        this.authorizedRequest = given().header("Authorization", "Bearer " + Token.generate("test", 30L, "test"));
     }
 
     @DisplayName("When GET `/todo/{uuid}` has a blank uuid then endpoint must return a bad request status (400) ")
     @ParameterizedTest(name = "When `uuid` is \"{0}\" then the exception must bw thrown")
     @ValueSource(strings = {"   ", " "})
     void whenTodoUuidIsBlankThenTheEndpointMustReturnBadRequestStatus(String uuid) {
-        given().header("Authorization", "Bearer " + token)
+        authorizedRequest
         .pathParam("uuid", uuid)
         .when().get("/{uuid}")
         .then()
@@ -61,7 +62,7 @@ class TodoControllerTest {
 
         when(service.findByUuid(uuid)).thenReturn(null);
 
-        given().header("Authorization", "Bearer " + token)
+        authorizedRequest
         .pathParam("uuid", uuid)
         .when().get("/{uuid}")
         .then()
@@ -80,7 +81,7 @@ class TodoControllerTest {
 
         when(service.findByUuid(uuid)).thenReturn(todo);
 
-        given().header("Authorization", "Bearer " + token)
+        authorizedRequest
         .pathParam("uuid", uuid)
         .when().get("/{uuid}")
         .then()
@@ -98,7 +99,7 @@ class TodoControllerTest {
         TodoModel model = new TodoModel();
         model.setDone(true);
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().post()
         .then()
@@ -116,7 +117,7 @@ class TodoControllerTest {
         TodoModel model = new TodoModel();
         model.setContent(content);
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().post()
         .then()
@@ -135,7 +136,7 @@ class TodoControllerTest {
 
         when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(null);
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().post()
         .then()
@@ -159,7 +160,7 @@ class TodoControllerTest {
         when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(user);
         doNothing().when(service).create(todo);
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().post()
         .then().statusCode(201).log().all();
@@ -169,22 +170,22 @@ class TodoControllerTest {
     @ParameterizedTest(name = "When `uuid` is \"{0}\" then the exception must bw thrown")
     @ValueSource(strings = {"   ", " "})
     void whenTodoUuidIsBlankForDeleteThenTheEndpointMustReturnBadRequestStatus(String uuid) {
-        given().header("Authorization", "Bearer " + token)
+        authorizedRequest
         .pathParam("uuid", uuid)
         .when().delete("/{uuid}")
         .then()
         .statusCode(400).log().all();
     }
 
-    @DisplayName("When DELETE `/todo` receive a existent uuid, it must return an no content status code (404)")
+    @DisplayName("When DELETE `/todo` receive a existent uuid, it must return an no content status code (204)")
     @Test
-    void whenTodoDoesNotExistsThenTheEndpointShouldReturnNotFoundStatusCode() {
+    void whenTodoDoesExistsThenTheEndpointShouldReturnNoContentStatusCode() {
         String uuid = "1234";
         var todo = new Todo();
         when(repository.findByUuid(uuid)).thenReturn(todo);
         doNothing().when(repository).delete(todo);
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .pathParam("uuid", uuid)
         .when().delete("/{uuid}")
         .then().statusCode(204).log().all();
@@ -199,7 +200,7 @@ class TodoControllerTest {
 
         when(service.findByUuid(model.getUuid())).thenReturn(null);
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().put()
         .then()
@@ -220,7 +221,7 @@ class TodoControllerTest {
         when(service.findByUuid(model.getUuid())).thenReturn(new Todo());
         when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(null);
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().put()
         .then()
@@ -243,7 +244,7 @@ class TodoControllerTest {
         when(service.findByUuid(model.getUuid())).thenReturn(new Todo());
         when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(new ApplicationUser());
 
-        given().header("Authentication", "Bearer " + token)
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().put()
         .then()
@@ -253,7 +254,7 @@ class TodoControllerTest {
         .statusCode(400).log().all();
     }
 
-    @DisplayName("When PUT `/todo` receive a valid todo, it must return an no content status code (404)")
+    @DisplayName("When PUT `/todo` receive a valid todo, it must return an no content status code (204)")
     @Test
     void whenTodoIsValidThenTheEndpointShouldReturnNotFoundStatusCode() {
         TodoModel model = new TodoModel();
@@ -261,10 +262,15 @@ class TodoControllerTest {
         model.setUserUuid("1234");
         model.setUuid("valid_uuid");
 
-        when(service.findByUuid(model.getUuid())).thenReturn(new Todo());
-        when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(new ApplicationUser());
+        var todo = new Todo();
+        var user = new ApplicationUser();
+        user.setUuid("1234");
+        todo.setUser(user);
 
-        given().header("Authentication", "Bearer " + token)
+        when(service.findByUuid(model.getUuid())).thenReturn(todo);
+        when(applicationUserService.findByUuid(model.getUserUuid())).thenReturn(user);
+
+        authorizedRequest
         .contentType(ContentType.JSON).body(model)
         .when().put()
         .then()

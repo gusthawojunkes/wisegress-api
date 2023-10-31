@@ -9,6 +9,11 @@ quarkus:
   http:
     port: 8080
     test-port: 8180
+    cors:
+      ~: true
+      origins: "http://127.0.0.1:5173"
+      headers: "Content-Type,Authorization"
+      methods: "GET,POST,PUT,DELETE"
 
   swagger-ui:
     path: /swagger
