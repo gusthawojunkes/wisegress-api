@@ -24,11 +24,6 @@ public class TaskService implements CRUDService<Task> {
     }
 
     @Override
-    public List<Task> read() {
-        return null;
-    }
-
-    @Override
     public void update(Task entity) {
         repository.merge(entity);
     }

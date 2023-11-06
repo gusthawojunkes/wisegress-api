@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import wo.it.core.exceptions.EntityNotFoundException;
 import wo.it.core.exceptions.PersistException;
+import wo.it.core.filter.TodoFilter;
 import wo.it.core.interfaces.CRUDService;
 import wo.it.database.entities.Todo;
 import wo.it.repositories.TodoRepository;
@@ -28,11 +29,6 @@ public class TodoService implements CRUDService<Todo> {
     }
 
     @Override
-    public List<Todo> read() {
-        return null;
-    }
-
-    @Override
     @Transactional
     public void update(Todo entity) {
         repository.merge(entity);
@@ -47,4 +43,9 @@ public class TodoService implements CRUDService<Todo> {
         }
         repository.delete(todo);
     }
+
+    public List<Todo> find(TodoFilter filter) {
+        return repository.find(filter);
+    }
+
 }

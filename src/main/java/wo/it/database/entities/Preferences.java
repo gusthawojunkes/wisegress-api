@@ -48,6 +48,13 @@ public class Preferences extends AbstractEntity {
     )
     private boolean useTodo;
 
+    public Preferences() {
+        this.useAgenda = true;
+        this.usePomodoro = true;
+        this.useTodo = true;
+        this.useKanban = true;
+    }
+
     public PreferencesModel toModel() {
         var model = new PreferencesModel();
         model.setUuid(this.uuid);

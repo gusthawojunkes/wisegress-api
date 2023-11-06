@@ -49,8 +49,12 @@ public class Formulary {
             critics.add(new RegistrationCritic("email","O e-mail não pode ser vazio", this.email));
         }
 
+        if (StringUtils.length(this.name) <= 3) {
+            critics.add(new RegistrationCritic("name","O nome do usuário deve conter ao menos quatro letras!", this.name));
+        }
+
         if (this.birthday.isAfter(LocalDate.now())) {
-            critics.add(new RegistrationCritic("birthday","A data de aniversário não pode ser maior que a data de hoje!", this.email));
+            critics.add(new RegistrationCritic("birthday","A data de aniversário não pode ser maior que a data de hoje!", this.birthday));
         }
 
         this.setCritics(critics);

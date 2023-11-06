@@ -85,11 +85,6 @@ public class ApplicationUserService implements CRUDService<ApplicationUser> {
     }
 
     @Override
-    public List<ApplicationUser> read() {
-        throw new NotImplementedException();
-    }
-
-    @Override
     public void update(ApplicationUser entity) {
         throw new NotImplementedException();
     }

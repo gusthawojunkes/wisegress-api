@@ -23,11 +23,6 @@ public class FeedbackService implements CRUDService<Feedback> {
     }
 
     @Override
-    public List<Feedback> read() {
-        return null;
-    }
-
-    @Override
     public void update(Feedback entity) {
 
     }
