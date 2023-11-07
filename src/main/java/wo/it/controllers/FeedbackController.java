@@ -39,6 +39,11 @@ public class FeedbackController {
             response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar o feedback");
             return Response.status(BAD_REQUEST).entity(response).build();
         }
+        if (user.isBlocked()) {
+            response.setErrorMessage("Usuário bloqueado no sistema!");
+            return Response.status(BAD_REQUEST).entity(response).build();
+        }
+
 
         if (model.getFeature() == null) {
             response.setErrorMessage("Não é possível cadastrar um feedback sem identificar a feature.");

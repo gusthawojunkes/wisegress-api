@@ -13,7 +13,6 @@ import wo.it.core.interfaces.CRUDController;
 import wo.it.core.response.CommonValidationResponse;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.database.entities.Task;
-import wo.it.database.entities.Todo;
 import wo.it.models.TaskModel;
 import wo.it.services.ApplicationUserService;
 import wo.it.services.TaskService;
@@ -44,6 +43,11 @@ public class TaskController implements CRUDController<TaskModel> {
             if (user == null) {
                 response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a task!");
                 return Response.status(NOT_FOUND).entity(response).build();
+            }
+
+            if (user.isBlocked()) {
+                response.setErrorMessage("Usuário bloqueado no sistema!");
+                return Response.status(BAD_REQUEST).entity(response).build();
             }
 
             if (model.isDone() || model.getCompletedAt() != null) {
@@ -112,6 +116,11 @@ public class TaskController implements CRUDController<TaskModel> {
             if (user == null) {
                 response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a task");
                 return Response.status(NOT_FOUND).entity(response).build();
+            }
+
+            if (user.isBlocked()) {
+                response.setErrorMessage("Usuário bloqueado no sistema!");
+                return Response.status(BAD_REQUEST).entity(response).build();
             }
 
             if (StringUtils.isBlank(model.getDescription())) {
