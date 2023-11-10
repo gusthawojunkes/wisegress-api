@@ -4,11 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum Rating {
 
-    EXCELLENT("Excelente"),
-    VERY_GOOD("Muito bom"),
-    GOOD ("Bom"),
+    POOR("Ruim"),
     FAIR("Razoável"),
-    POOR("Ruim");
+    GOOD ("Bom"),
+
+    VERY_GOOD("Muito bom"),
+    EXCELLENT("Excelente");
 
     private final String description;
 
