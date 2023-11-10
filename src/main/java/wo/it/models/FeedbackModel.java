@@ -1,6 +1,5 @@
 package wo.it.models;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,9 +18,6 @@ public class FeedbackModel extends AbstractModel {
     private Rating rating;
 
     private String description;
-
-    @NotBlank
-    private String userUuid;
 
     public Feedback toEntity() {
         var entity = new Feedback();

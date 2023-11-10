@@ -14,9 +14,7 @@ import wo.it.core.interfaces.CRUDController;
 import wo.it.core.response.CommonValidationResponse;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.database.entities.Event;
-import wo.it.database.entities.Todo;
 import wo.it.models.EventModel;
-import wo.it.models.TodoModel;
 import wo.it.services.ApplicationUserService;
 import wo.it.services.EventService;
 
@@ -39,16 +37,12 @@ public class EventController implements CRUDController<EventModel> {
     @POST
     public Response create(EventModel model) {
         CommonValidationResponse response = CommonValidationResponse.initWithSuccess();
-        ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
-        if (user == null) {
-            response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a task!");
-            return Response.status(NOT_FOUND).entity(response).build();
+        var validationResponse = validateUser(response, applicationUserService, model);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
         }
 
-        if (user.isBlocked()) {
-            response.setErrorMessage("Usuário bloqueado no sistema!");
-            return Response.status(BAD_REQUEST).entity(response).build();
-        }
+        ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
 
         try {
             Event event = model.toEntity();
@@ -65,8 +59,8 @@ public class EventController implements CRUDController<EventModel> {
 
     @Authenticated
     @Override
-    @GET
-    public Response find(String uuid) {
+    @GET() @Path("{uuid}")
+    public Response find(@PathParam("uuid") String uuid) {
         return null;
     }
 
@@ -75,22 +69,17 @@ public class EventController implements CRUDController<EventModel> {
     @PUT
     public Response update(EventModel model) {
         var response = CommonValidationResponse.initWithSuccess();
+        var validationResponse = validateUser(response, applicationUserService, model);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
+        }
+
         try {
             Event event = service.findByUuid(model.getUuid());
+            ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
             if (event == null) {
                 response.setErrorMessage("O evento de UUID '" + model.getUuid() + "' não pode ser atualizado pois o registro não existe!");
                 return Response.status(NOT_FOUND).entity(response).build();
-            }
-
-            ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
-            if (user == null) {
-                response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a task");
-                return Response.status(NOT_FOUND).entity(response).build();
-            }
-
-            if (user.isBlocked()) {
-                response.setErrorMessage("Usuário bloqueado no sistema!");
-                return Response.status(BAD_REQUEST).entity(response).build();
             }
 
             if (StringUtils.isBlank(model.getDescription())) {
@@ -99,6 +88,7 @@ public class EventController implements CRUDController<EventModel> {
             }
 
             event.loadFieldsToUpdate(model);
+            event.setUser(user);
 
             service.update(event);
         } catch (Exception e) {
@@ -137,23 +127,18 @@ public class EventController implements CRUDController<EventModel> {
             return Response.status(BAD_REQUEST).entity("{ \"message\": The user uuid cannot be empty }").build();
         }
 
-        ApplicationUser user = applicationUserService.findByUuid(userUuid);
-        if (user == null) {
-            response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a TODO");
-            return Response.status(NOT_FOUND).entity(response).build();
-        }
-
-        if (user.isBlocked()) {
-            response.setErrorMessage("Usuário bloqueado no sistema!");
-            return Response.status(BAD_REQUEST).entity(response).build();
+        var validationResponse = validateUser(response, applicationUserService, userUuid);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
         }
 
         EventFilter filter = EventFilter.from(userUuid);
         var foundEvents = this.service.find(filter);
         for (Event event : foundEvents) {
-            events.add(event.toModel());
+            var model = event.toModel();
+            model.setUserUuid(userUuid);
+            events.add(model);
         }
-
 
         return Response.ok().entity(events).build();
     }

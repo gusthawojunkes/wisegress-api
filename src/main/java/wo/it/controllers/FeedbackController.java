@@ -10,6 +10,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 import wo.it.core.exceptions.PersistException;
+import wo.it.core.interfaces.CRUDController;
 import wo.it.core.response.CommonValidationResponse;
 import wo.it.database.entities.ApplicationUser;
 import wo.it.database.entities.Feedback;
@@ -39,6 +40,7 @@ public class FeedbackController {
             response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar o feedback");
             return Response.status(BAD_REQUEST).entity(response).build();
         }
+
         if (user.isBlocked()) {
             response.setErrorMessage("Usuário bloqueado no sistema!");
             return Response.status(BAD_REQUEST).entity(response).build();

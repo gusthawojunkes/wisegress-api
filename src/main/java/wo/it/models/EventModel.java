@@ -18,8 +18,6 @@ public class EventModel extends AbstractModel {
 
     private String description;
 
-    private String userUuid;
-
     public Event toEntity() {
         Event event = new Event();
         event.setUuid(this.getUuid());

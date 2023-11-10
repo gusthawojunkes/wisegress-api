@@ -36,6 +36,10 @@ public class TodoController implements CRUDController<TodoModel> {
     @POST
     public Response create(TodoModel model) {
         var response = CommonValidationResponse.initWithSuccess();
+        var validationResponse = validateUser(response, applicationUserService, model);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
+        }
 
         if (model.isDone() || model.getCompletedAt() != null) {
             response.setErrorMessage("Não é possível criar uma TODO já finalizada");
@@ -48,15 +52,6 @@ public class TodoController implements CRUDController<TodoModel> {
         }
 
         ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
-        if (user == null) {
-            response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a TODO");
-            return Response.status(NOT_FOUND).entity(response).build();
-        }
-
-        if (user.isBlocked()) {
-            response.setErrorMessage("Usuário bloqueado no sistema!");
-            return Response.status(BAD_REQUEST).entity(response).build();
-        }
 
         try {
             Todo todo = model.toEntity();
@@ -92,22 +87,15 @@ public class TodoController implements CRUDController<TodoModel> {
     @PUT
     public Response update(TodoModel model) {
         var response = CommonValidationResponse.initWithSuccess();
+        var validationResponse = validateUser(response, applicationUserService, model);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
+        }
         try {
             Todo todo = service.findByUuid(model.getUuid());
             if (todo == null) {
                 response.setErrorMessage("O TODO de UUID '" + model.getUuid() + "' não pode ser atualizado pois o registro não existe!");
                 return Response.status(NOT_FOUND).entity(response).build();
-            }
-
-            ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
-            if (user == null) {
-                response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a TODO");
-                return Response.status(NOT_FOUND).entity(response).build();
-            }
-
-            if (user.isBlocked()) {
-                response.setErrorMessage("Usuário bloqueado no sistema!");
-                return Response.status(BAD_REQUEST).entity(response).build();
             }
 
             if (StringUtils.isBlank(model.getContent())) {
@@ -149,20 +137,14 @@ public class TodoController implements CRUDController<TodoModel> {
     @GET @Path("/all/{userUuid}")
     public Response findByUser(@PathParam("userUuid") String userUuid) {
         var response = CommonValidationResponse.initWithSuccess();
+        var validationResponse = validateUser(response, applicationUserService, userUuid);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
+        }
+
         var todos = new ArrayList<TodoModel>();
         if (StringUtils.isBlank(userUuid)) {
             return Response.status(BAD_REQUEST).entity("{ \"message\": The user uuid cannot be empty }").build();
-        }
-
-        ApplicationUser user = applicationUserService.findByUuid(userUuid);
-        if (user == null) {
-            response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a TODO");
-            return Response.status(NOT_FOUND).entity(response).build();
-        }
-
-        if (user.isBlocked()) {
-            response.setErrorMessage("Usuário bloqueado no sistema!");
-            return Response.status(BAD_REQUEST).entity(response).build();
         }
 
         TodoFilter filter = TodoFilter.from(userUuid).unfinished();

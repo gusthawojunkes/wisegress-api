@@ -29,9 +29,6 @@ public class TaskModel extends AbstractModel {
     @NotNull
     private Priority priority;
 
-    @NotBlank
-    private String userUuid;
-
     public Task toEntity() {
         Task task = new Task();
         task.setUuid(this.getUuid());

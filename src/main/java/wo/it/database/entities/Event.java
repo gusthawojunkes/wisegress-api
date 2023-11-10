@@ -33,6 +33,10 @@ public class Event extends AbstractEntity {
     private ApplicationUser user;
 
     public void loadFieldsToUpdate(EventModel model) {
+        this.setDate(model.getDate());
+        this.setStartDate(model.getStartDate());
+        this.setEndDate(model.getEndDate());
+        this.setDescription(model.getDescription());
     }
 
     public EventModel toModel() {

@@ -25,9 +25,6 @@ public class TodoModel extends AbstractModel {
 
     private Priority priority = Priority.MEDIUM;
 
-    @NotBlank
-    private String userUuid;
-
     public static TodoModel loadFrom(Todo todo) {
         TodoModel model = new TodoModel();
         model.setUuid(todo.getUuid());

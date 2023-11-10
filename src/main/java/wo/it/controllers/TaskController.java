@@ -37,18 +37,13 @@ public class TaskController implements CRUDController<TaskModel> {
     @POST
     public Response create(TaskModel model) {
         CommonValidationResponse response = CommonValidationResponse.initWithSuccess();
+        var validationResponse = validateUser(response, applicationUserService, model);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
+        }
         var now = LocalDateTime.now();
         try {
             ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
-            if (user == null) {
-                response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a task!");
-                return Response.status(NOT_FOUND).entity(response).build();
-            }
-
-            if (user.isBlocked()) {
-                response.setErrorMessage("Usuário bloqueado no sistema!");
-                return Response.status(BAD_REQUEST).entity(response).build();
-            }
 
             if (model.isDone() || model.getCompletedAt() != null) {
                 response.setErrorMessage("Não é possível criar uma task já finalizada");
@@ -105,22 +100,15 @@ public class TaskController implements CRUDController<TaskModel> {
     public Response update(TaskModel model) {
         var response = CommonValidationResponse.initWithSuccess();
         var now = LocalDateTime.now();
+        var validationResponse = validateUser(response, applicationUserService, model);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
+        }
         try {
             Task task = service.findByUuid(model.getUuid());
             if (task == null) {
                 response.setErrorMessage("A task de UUID '" + model.getUuid() + "' não pode ser atualizado pois o registro não existe!");
                 return Response.status(NOT_FOUND).entity(response).build();
-            }
-
-            ApplicationUser user = applicationUserService.findByUuid(model.getUserUuid());
-            if (user == null) {
-                response.setErrorMessage("Usuário não encontrado. Não é possível cadastrar a task");
-                return Response.status(NOT_FOUND).entity(response).build();
-            }
-
-            if (user.isBlocked()) {
-                response.setErrorMessage("Usuário bloqueado no sistema!");
-                return Response.status(BAD_REQUEST).entity(response).build();
             }
 
             if (StringUtils.isBlank(model.getDescription())) {
