@@ -53,7 +53,7 @@ public class AuthService {
         response.makeValid();
         response.setUser(user.toFlatModel());
         try {
-            var token = Token.generate(user.getName(), new HashSet<>(), 3600L, user.getEmail());
+            var token = Token.generate(user.getName(), new HashSet<>(), 999999L, user.getEmail());
             response.setToken(token);
         } catch (Exception e) {
             e.printStackTrace();

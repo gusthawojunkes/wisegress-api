@@ -70,8 +70,5 @@ public class Task extends AbstractEntity {
         this.setPriority(model.getPriority());
         this.setSituation(model.getSituation());
         this.setDueDate(model.getDueDate());
-        if (StringUtils.equals(this.getUser().getUuid(), model.getUserUuid())) {
-            throw new UpdateException("O UUID da model e do entidade não são os mesmos! (Entidade: " + this.getUser().getUuid() + " / Model: " + model.getUserUuid() + ")");
-        }
     }
 }

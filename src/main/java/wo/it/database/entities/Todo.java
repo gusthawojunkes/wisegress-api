@@ -71,9 +71,6 @@ public class Todo extends AbstractEntity {
         }
         this.setDone(model.isDone());
         this.setPriority(model.getPriority());
-        if (!StringUtils.equals(this.getUser().getUuid(), model.getUserUuid())) {
-            throw new UpdateException("O UUID da model e do entidade não são os mesmos! (Entidade: " + this.getUser().getUuid() + " / Model: " + model.getUserUuid() + ")");
-        }
     }
 
 }
