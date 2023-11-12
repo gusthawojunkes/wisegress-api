@@ -70,6 +70,7 @@ public class FeedbackController {
         return Response.status(CREATED).build();
     }
 
+    @Authenticated
     @GET @Path("/calculate/{userUuid}")
     public Response calculate(@PathParam("userUuid") String userUuid) {
         var response = CommonValidationResponse.initWithSuccess();

@@ -18,6 +18,7 @@ import wo.it.models.TodoModel;
 import wo.it.services.ApplicationUserService;
 import wo.it.services.TodoService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static jakarta.ws.rs.core.Response.Status.*;
@@ -147,9 +148,13 @@ public class TodoController implements CRUDController<TodoModel> {
             return Response.status(BAD_REQUEST).entity("{ \"message\": The user uuid cannot be empty }").build();
         }
 
-        TodoFilter filter = TodoFilter.from(userUuid).unfinished();
+        TodoFilter filter = TodoFilter.from(userUuid);
         var foundTodos = this.service.find(filter);
+        var yesterday = LocalDateTime.now().minusDays(1);
         for (Todo todo : foundTodos) {
+            if (todo.isDone() && todo.getCompletedAt() != null && (todo.getCompletedAt().isEqual(yesterday) || todo.getCompletedAt().isBefore(yesterday))) {
+                continue;
+            }
             todos.add(todo.toModel());
         }
 
