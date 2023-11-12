@@ -16,8 +16,10 @@ import wo.it.database.entities.Task;
 import wo.it.models.TaskModel;
 import wo.it.services.ApplicationUserService;
 import wo.it.services.TaskService;
+import wo.it.core.filter.TaskFilter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static jakarta.ws.rs.core.Response.Status.*;
 
@@ -150,5 +152,28 @@ public class TaskController implements CRUDController<TaskModel> {
         }
 
         return Response.status(NO_CONTENT).build();
+    }
+
+    @Authenticated
+    @GET @Path("/all/{userUuid}")
+    public Response findByUser(@PathParam("userUuid") String userUuid) {
+        var response = CommonValidationResponse.initWithSuccess();
+        var validationResponse = validateUser(response, applicationUserService, userUuid);
+        if (validationResponse.isPresent()) {
+            return validationResponse.get();
+        }
+
+        var tasks = new ArrayList<TaskModel>();
+        if (StringUtils.isBlank(userUuid)) {
+            return Response.status(BAD_REQUEST).entity("{ \"message\": The user uuid cannot be empty }").build();
+        }
+
+        TaskFilter filter = TaskFilter.from(userUuid).unfinished();
+        var foundTasks = this.service.find(filter);
+        for (Task task : foundTasks) {
+            tasks.add(task.toModel());
+        }
+
+        return Response.ok().entity(tasks).build();
     }
 }
